@@ -1,11 +1,11 @@
 * 计算机科学
-  * [HTTP安全](Code/HTTP安全.md)
-  * [HTTP协议](HTTP协议.md)
-  * [JSON](JSON.md)
-  * [REDIS](REDIS.md)
+  * [HTTP安全](TO/HTTP安全.md)
+  * [HTTP协议](TO/HTTP协议.md)
+  * [JSON](TO/JSON.md)
+  * [REDIS](TO/REDIS.md)
 
 * 经济学
-  * [经济学十大原理](经济学十大原理.md)
-  * [现值](现值.md)
-  * [资产负债表与权益](资产负债表与权益.md)
-  * [分红](分红.md)
+  * [经济学十大原理](EO/经济学十大原理.md)
+  * [现值](EO现/值.md)
+  * [资产负债表与权益](EO/资产负债表与权益.md)
+  * [分红](EO/分红.md)
