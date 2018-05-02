@@ -68,36 +68,35 @@ User-Agent:Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (K
 
 ~~~
 <?php
-      $headers = array(
-        'POST /index.php HTTP/1.0',
-        'User-Agent:CMD (Linux:Intel Linux)',
-        'HOST: example.com',
-        'Agent: text/*',
-        'Agent-language: en'
-        'Content-type: multipart/form-data;charset="utf-8"',
-        'Cache-Control: no-cache',
-        'Content-length:100',
-        
-      );
+	$headers = array(
+		'POST /index.php HTTP/1.0',
+		'User-Agent:CMD (Linux:Intel Linux)',
+		'HOST: example.com',
+		'Agent: text/*',
+		'Agent-language: en'
+		'Content-type: multipart/form-data;charset="utf-8"',
+		'Cache-Control: no-cache',
+		'Content-length:100',
+	);
 
-      $ch = curl_init();
+	$ch = curl_init();
 
-      curl_setopt($ch, CURLOPT_URL, 'example.com');
+	curl_setopt($ch, CURLOPT_URL, 'example.com');
 
-      curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);//文本返回结果
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);//文本返回结果
 
-      curl_setopt($ch, CURLOPT_TIMEOUT, 10);//执行最长秒数
+	curl_setopt($ch, CURLOPT_TIMEOUT, 10);//执行最长秒数
 
-      curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+	curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 
-      $data = curl_exec($ch);
+	$data = curl_exec($ch);
 
-      if(curl_errno($ch)){
-        echo "Error: " . curl_error($ch);
-      }else{
-        var_dump($data);
-        curl_close($ch);
-      }
+	if (curl_errno($ch)) {
+		echo "Error: " . curl_error($ch);
+	} else {
+		var_dump($data);
+		curl_close($ch);
+	}
 ?>
 ~~~
 
@@ -140,47 +139,47 @@ Date:Mon, 05 Sep 2016 07:05:22 GMT
 **PHP实例：**
 
 ~~~
-<php
-    $headers = array(
-      'POST /index.php HTTP/1.0',//该行不影响请求，可删除
-      'Content-Type: multipart/form-data;charset="utf-8"',//注意这里的参数设置
-      'User-AppKey: youAppKey',//自定义的头域
-      'User-AppSecret: youAppSercret'
-    );
+<?php
+	$headers = array(
+	    'POST /index.php HTTP/1.0',//该行不影响请求，可删除
+	    'Content-Type: multipart/form-data;charset="utf-8"',//注意这里的参数设置
+	    'User-AppKey: youAppKey',//自定义的头域
+	    'User-AppSecret: youAppSercret'
+	);
 
-    $post_data = array(
-      'uid' => '10000',
-      'nickName' => '李华',
-    );
+	$post_data = array(
+	    'uid' => '10000',
+	    'nickName' => '李华',
+	);
 
-    /*
-    *  如果Content-Type设置为application/x-www-form-urlencoded，需$post_data以urlencode形式
-    *  $o = '';
-    *  foreach ($post_data as $key => $value){
-    *    $o .= $key . '=' . urlencode($value) . '&';
-    *  }
-    *
-    *  $post_data = substr($o, 0, -1);
-    */
+	/*
+	*  如果Content-Type设置为application/x-www-form-urlencoded，需$post_data以urlencode形式
+	*  $o = '';
+	*  foreach ($post_data as $key => $value){
+	*    $o .= $key . '=' . urlencode($value) . '&';
+	*  }
+	*
+	*  $post_data = substr($o, 0, -1);
+	*/
 
-    $ch = $curl_init();
+	$ch = $curl_init();
 
-    curl_setopt($ch, CURLOPT_URL, 'example.com/index.php');
+	curl_setopt($ch, CURLOPT_URL, 'example.com/index.php');
 
-    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+	curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 
-    curl_setopt($ch, CURLOPT_POST, TRUE);
+	curl_setopt($ch, CURLOPT_POST, TRUE);
 
-    curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
+	curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
 
-    $data = curl_exec($ch);
+	$data = curl_exec($ch);
 
-    if($curl_errno($ch)){
-      echo 'Error: ' . curl_error($ch);
-    }else{
-      var_dump($data);
-      curl_close($ch);
-    }
+	if ($curl_errno($ch)) {
+	    echo 'Error: ' . curl_error($ch);
+	} else {
+	    var_dump($data);
+	    curl_close($ch);
+	}
 ?>
 ~~~
 
@@ -189,12 +188,12 @@ Date:Mon, 05 Sep 2016 07:05:22 GMT
 使用EGPCS标识获取即：$_COOKIE、$_GET、$_POST、$_FILES、$_SERVER、$_ENV
 ~~~
 <?php
-    $appKey = $_SERVER['HTTP_USER_APPKEY'];
-    $appSecret = $_SERVER['HTTP_USER_APPSECRET'];
-    $nickName = $_POST['nickName'];
-    echo 'AppKey: ' . $appKey . "\n";
-    echo 'AppSecret: ' . $appSecret . '\n';
-    echo 'nickName: ' . $nickName;
+	$appKey = $_SERVER['HTTP_USER_APPKEY'];
+	$appSecret = $_SERVER['HTTP_USER_APPSECRET'];
+	$nickName = $_POST['nickName'];
+	echo 'AppKey: ' . $appKey . "\n";
+	echo 'AppSecret: ' . $appSecret . '\n';
+	echo 'nickName: ' . $nickName;
 ?>
 
 **输出结果：**
