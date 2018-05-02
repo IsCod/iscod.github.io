@@ -1,6 +1,3 @@
-* 首页
-  * [IsCod](README.md)
-
 * 计算机科学
   * [HTTP安全](TO/HTTP安全.md)
   * [HTTP协议](TO/HTTP协议.md)
