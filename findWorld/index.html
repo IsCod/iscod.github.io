@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>predis限流器-IsCod by IsCod</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="../stylesheets/normalize.css" media="screen">
+    <!-- <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'> -->
+    <link rel="stylesheet" type="text/css" href="../stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="../stylesheets/github-light.css" media="screen">
+    <script type="text/javascript" src="/javascript/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="/javascript/index.js"></script>
+  </head>
+  <body>
+    <section class="main-content">
+      <h3>predis限流器</h3>
+
+      <h4>INCR</h4>
+
+      <p>
+        首先介绍predis中的incr，incrBy命令<br/>
+        用法：
+        <pre><code>$redis->incr(‘key’)</code></pre>
+        key中的值自增加1，如果key不存在，那么key先被初始化位0，然后自增。如果值包含不正确的类型那么返回一个错误。<br/>
+        如果添加第二个参数，那么请使用incrBy，$redis->incrBy(‘key’, increment),将在key的基础上增加increment。<br/>
+      </p>
+
+      <h4>限速器</h4>
+
+      <p>限速器是一个特殊化的计算器，它用于一个操作可以被执行的速率(rate)。</p>
+
+      <p>限速器的经典用法是限制公开的API的请求次数，以下是一个限速器时间实例，它将API的最大请求限制在每个IP地址每秒钟十个之内。</p>
+
+      <pre>
+<code>&lt;?php
+    $ip = get_api_ip();//获取用户ip函数 
+    $key = 'SECOND_REQUERY_NUM:'.$ip;
+    $requery_num = $redis->lLen($key);
+    if ($requery_num > 10) {
+      die('Too many requey second');
+    }
+    if(!$redis->existes($key)) {
+      $redis->rPush($key, $ip);
+      $redis->expire($key, 1);
+    }
+    $redis->rPushx($key, $ip);
+    echo 'ok';
+?&gt;</code>
+</pre>
+      <p>
+        限速器使用列表结构作为容器,$redis->lLen()检查列表中记录的访问次数，第二个if语句用于第一次访问时，执行计数和创建列表，并且设置过期时间，最后的$redis->rPushx在后续的计数中进行增加操作。
+      </p>
+
+      <p style="float: right;">
+        下一篇：<span><a href="HttpProto.html">HTTP协议</a></span>
+      </p>
+
+    </section>
+  </body>
+</html>

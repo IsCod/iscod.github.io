@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>JSON协议-IsCod by IsCod</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="../stylesheets/normalize.css" media="screen">
+    <!-- <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'> -->
+    <link rel="stylesheet" type="text/css" href="../stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="../stylesheets/github-light.css" media="screen">
+    <script type="text/javascript" src="/javascript/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="/javascript/index.js"></script>
+  </head>
+  <body>
+    <section class="main-content">
+      <h3>JSON</h3>
+
+      <p>JSON：Javascript对象表示方法。是储存和交换信息的语法类似XML</p>
+      <p>JSON具有自我描述性，文本格式在语法上与JavaScript对象代码相同</p>
+
+      <h4>JSON键/值</h4>
+
+      <p>
+        <pre><code>"key":"value"</code></pre>
+      </p>
+
+      <p>JSON对象
+        <pre><code>{"name":"username", "password":"password"}</code></pre>
+        等价的Javascript：
+        <pre><code>var name = "username"<br/>var password="password"</code></pre>
+      </p>
+
+       <p>JSON数组
+        <pre><code>[{"name":"username"}, {"password":"password"}]</code></pre>
+        等价的Javascript：
+        <pre><code>var example = [{"name":"username"}, {"password":"password"}]</code></pre>
+      </p>
+
+      <h4>PHP中json_encode对变量进行编码</h4>
+
+      <p>
+        json_encode($value, $option, $depth)<br/>
+        参数：<br/>
+        value：待编译的vaule（必选）<br/>
+        option：可扩展定义，设置为JSON_FORCE_OBJECT时将非关联数组转换成类（可选）<br/>
+        depth：最大深度（可选）<br/>
+      </p>
+      <p>
+        在没有设置option为JSON_FORCE_OBJECT时关联数组会转换为JSON为数组，非关联数组会转换为JSON为对象<br/>
+        示例：
+        <pre><code>&lt;?php
+    //非关联数组
+    $arr = array('a', 'b', 'c');
+    $arr1 = array(0 => 'a', 1 => 'b', '2' => 'c');
+    //关联数组
+    $arr2 = array(1 => 'a', 2 => 'b', 3 => 'c');
+    $arr3 = array('k' => 'a', 'k1' => 'b', 3 => 'c');
+
+    echo 'arr: ' . json_encode($arr) . "\n";
+    echo 'arr1: ' . json_encode($arr1) . "\n";
+    echo 'arr2: ' . json_encode($arr2) . "\n";
+    echo 'arr3: ' . json_encode($arr3) . "\n";
+?&gt;</code></pre>
+      输出：
+      <pre><code>arr: ["a","b","c"]
+arr1: ["a","b","c"]
+arr2: {"1":"a","2":"b","3":"c"}
+arr3: {"k":"a","k1":"b","3":"c"}</code></pre>
+      添加option为JSON_FORCE_OBJECTS是转换为对象，返回：
+      <pre><code>arr: {"0":"a","1":"b","2":"c"}
+arr1: {"0":"a","1":"b","2":"c"}
+arr2: {"1":"a","2":"b","3":"c"}
+arr3: {"k":"a","k1":"b","3":"c"}
+arr4: {"1":1,"2":2,"3":3}</code></pre>
+
+      </p>
+
+      <p style="float: right;">
+        下一篇：<span><a href="HttpEncrypt.html">HTTP安全</a></span>
+      </p>
+
+    </section>
+  </body>
+</html>
