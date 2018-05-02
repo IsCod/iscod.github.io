@@ -49,9 +49,9 @@ HTTP请求的起始行有方法，请求地址，和协议版本组成
 
 **例如：**
 
-~~~
+```
 POST /index.php HTTP/1.0
-~~~
+```
 
 HTTP的请求首部字段包含一个名字和一个值，中间又冒号(:)分割
 
@@ -59,14 +59,14 @@ HTTP的请求首部字段包含一个名字和一个值，中间又冒号(:)分�
 
 **例如：**
 
-~~~
+```
 Host:example.com
 User-Agent:Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36
-~~~
+```
 
 **PHP实例：**
 
-~~~
+```php
 <?php
 	$headers = array(
 		'POST /index.php HTTP/1.0',
@@ -98,7 +98,7 @@ User-Agent:Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (K
 		curl_close($ch);
 	}
 ?>
-~~~
+```
 
 **HTTP响应报文**
 
@@ -106,31 +106,31 @@ HTTP响应起始行有三部分组成，协议HTTP版本、状态码、描述发
 
 **例如：**
 
-~~~
+```
 HTTP/1.O 404 Not Found
-~~~
+```
 
 HTTP响应首部字段主要是不能放到状态行的附加信息
 
 **例如：**
 
-~~~
+```
 Server: Nginx/1.6.3
 Content-length: 403
 Content-type: text/html
 Date:Mon, 05 Sep 2016 07:05:22 GMT
-~~~
+```
 
 **PHP实例：**
 
-~~~
+```php
 <?php
     header('HTTP/1.0 200 Ok');
     header('Cache-Control: no-cache, must-revalidate');//无缓存
     header('Content-Type: image/png');
     header('Expires: ' . gmdate(DATE_RFC822, time()-3600*24));//过期时间
 ?>
-~~~
+```
 
 **如何自定义头域和POST数据并获取？**
 
@@ -138,7 +138,7 @@ Date:Mon, 05 Sep 2016 07:05:22 GMT
 
 **PHP实例：**
 
-~~~
+```php
 <?php
 	$headers = array(
 	    'POST /index.php HTTP/1.0',//该行不影响请求，可删除
@@ -181,12 +181,16 @@ Date:Mon, 05 Sep 2016 07:05:22 GMT
 	    curl_close($ch);
 	}
 ?>
-~~~
+```
 
 **PHP获取HTTP请求信息**
 
-使用EGPCS标识获取即：$_COOKIE、$_GET、$_POST、$_FILES、$_SERVER、$_ENV
-~~~
+使用EGPCS标识获取即：
+```sh
+$_COOKIE、$_GET、$_POST、$_FILES、$_SERVER、$_ENV
+```
+
+```php
 <?php
 	$appKey = $_SERVER['HTTP_USER_APPKEY'];
 	$appSecret = $_SERVER['HTTP_USER_APPSECRET'];
@@ -195,11 +199,12 @@ Date:Mon, 05 Sep 2016 07:05:22 GMT
 	echo 'AppSecret: ' . $appSecret . '\n';
 	echo 'nickName: ' . $nickName;
 ?>
+```
 
 **输出结果：**
 
-~~~
+```
 AppKey: youAppKey
 AppSecret: youAppSercret
-~~~
+```
 nickName: 李华
