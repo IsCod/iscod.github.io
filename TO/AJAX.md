@@ -43,9 +43,8 @@ jQuery.ajax()方法通过HTTP请求加载远程数据。
 jQuery.ajax([setting])
 ```
 
-_string_ 可选参数，可通过$.ajaxSetup()设置默认参数
-
-_url_：发送请求的地址（可选）
+?> _string_ 可选参数，可通过$.ajaxSetup()设置默认参数
+?>_url_：发送请求的地址（可选）
 
 **常用参数：**
 ```
