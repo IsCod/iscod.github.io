@@ -1,42 +1,57 @@
+<!-- index.html -->
+
 <!DOCTYPE html>
-<html lang="en-us">
-  <head>
-    <meta charset="UTF-8">
-    <title>IsCod by IsCod</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
-    <!-- <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'> -->
-    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
-    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
-    <script type="text/javascript" src="/javascript/jquery-3.3.1.min.js"></script>
-    <script type="text/javascript" src="/javascript/index.js"></script>
-  </head>
+<html>
+<head>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="//unpkg.com/docsify/themes/vue.css">
+</head>
   <body>
-    <section class="main-content">
-      <h3>
-        <a id="welcome-to-iscod" class="anchor" href="#welcome-to-iscod" aria-hidden="true"><span class="octicon octicon-link"></span></a>Welcome to IsCod.
-      </h3>
+    <div id="app"></div>
+    <script>
+    window.$docsify = {
+      search: 'auto', // 默认值
 
-      <p>Think</p>
+      loadSidebar: 'sidebar.html',
+      alias: {
+        '/.*/sidebar.md': '/sidebar.md'
+      },
+      search : [
+        '/',            // => /README.md
+        '/Life/',       // => /guide.md
+        '/Code/', // => /get-started.md
+        '/Future/',      // => /zh-cn/README.md
+      ],
 
-<pre>
-<code>Life的Thinking
-Code的Thinking
-Future的Thinking
-</code></pre>
+      // 完整配置参数
+      search: {
+        maxAge: 1000, // 过期时间，单位毫秒，默认一天
+        paths: [], // or 'auto'
+        placeholder: 'Type to search',
 
- <p>ToDo</p>
+        // 支持本地化
+        placeholder: {
+          '/': 'Search'
+        },
 
-<pre>
-<code>Life的ToDo
-Code的ToDo
-Future的ToDo
-</code></pre>
+        noData: 'No Results!',
 
-      <h3>
-        Give me
-      </h3>
-      <p>Give me Think left,code or future if you're email to iscodd@gmail.com</p>
-    </section>
-  </body>
+        // 支持本地化
+        noData: {
+          '/': 'No Results'
+        },
+
+        // 搜索标题的最大程级, 1 - 6
+        depth: 2
+      }
+    }
+  </script>
+  <script src="//unpkg.com/docsify"></script>
+  <script src="//unpkg.com/docsify/lib/plugins/search.js"></script>
+  <script src="//unpkg.com/docsify/lib/docsify.min.js"></script>
+  <script src="//unpkg.com/prismjs/components/prism-bash.js"></script>
+  <script src="//unpkg.com/prismjs/components/prism-php.js"></script>
+</body>
 </html>
