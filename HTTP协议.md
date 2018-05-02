@@ -186,19 +186,19 @@ Date:Mon, 05 Sep 2016 07:05:22 GMT
 **PHP获取HTTP请求信息**
 
 使用EGPCS标识获取即：
-```sh
+```
 $_COOKIE、$_GET、$_POST、$_FILES、$_SERVER、$_ENV
 ```
 
+**PHP实例：**
+
 ```php
-<?php
 	$appKey = $_SERVER['HTTP_USER_APPKEY'];
 	$appSecret = $_SERVER['HTTP_USER_APPSECRET'];
 	$nickName = $_POST['nickName'];
 	echo 'AppKey: ' . $appKey . "\n";
 	echo 'AppSecret: ' . $appSecret . '\n';
 	echo 'nickName: ' . $nickName;
-?>
 ```
 
 **输出结果：**
