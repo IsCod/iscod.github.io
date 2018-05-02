@@ -44,16 +44,15 @@ jQuery.ajax([setting])
 ```
 
 ?> _string_ 可选参数，可通过$.ajaxSetup()设置默认参数
-?> _url_：发送请求的地址（可选）
 
-**常用参数：**
+**$.ajaxSetup()设置常用参数：**
 ```
-?> _url_：发送请求的地址（可选）
-?> _type_：请求方法，默认为GET，可设置为POST、PUT、DELETE等（可选）
-?> data：发送到服务器的数据，默认使用key/value的对象形式，默认转换成相适应的格式，如GET转换为urlencode格式，processData参数可设置转换（可选）
-?> success：请求成功后回调函数（可选）
-?> error：请求出错回调函数（可选）
-?> dataType：返回数据类型，如果没有设置根据HTTP协议中的MIME判断，可能与预期不符（可选）
+_url_：发送请求的地址（可选）
+_type_：请求方法，默认为GET，可设置为POST、PUT、DELETE等（可选）
+data：发送到服务器的数据，默认使用key/value的对象形式，默认转换成相适应的格式，如GET转换为urlencode格式，processData参数可设置转换（可选）
+success：请求成功后回调函数（可选）
+error：请求出错回调函数（可选）
+dataType：返回数据类型，如果没有设置根据HTTP协议中的MIME判断，可能与预期不符（可选）
 ```
 
 ==============afasdfasdf
