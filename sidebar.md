@@ -1,4 +1,4 @@
-* IsCod
+* 首页
   * [IsCod](README.md)
 
 * 计算机科学
