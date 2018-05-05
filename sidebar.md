@@ -4,9 +4,9 @@
   * [JSON](TO/JSON.md)
   * [REDIS](TO/REDIS.md)
   * [AJAX](TO/AJAX.md)
+  * [算法](TO/算法.md)
 
 * 经济学
   * [经济学十大原理](EO/经济学十大原理.md)
   * [现值](EO/现值.md)
-  * [资产负债表与权益](EO/资产负债表与权益.md)
-  * [分红](EO/分红.md)
+  * [债券和股票](EO/债券和股票.md)

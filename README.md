@@ -27,8 +27,6 @@
 
 * 计算机科学
 
-计算机科学是
-
 * 文学
 
 [iscod_blog]: http://iscod.github.io
