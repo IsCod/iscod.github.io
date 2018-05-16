@@ -157,6 +157,36 @@ HTTP客户端向服务器发送报文之前, 需要在网际协议间通过IP地
 - 服务器向浏览器回送一条 HTTP 响应报文
 - 关闭连接,浏览器显示文档
 
+**使用telnet**
+
+Telnet程序可以连接到某个目标的TCP端口，并将此TCP端口的回送显示到用户屏幕上，它可以连接技术所有的TCP服务器。
+
+可以通过Telnet与web服务器进行通话。
+
+```sh
+$ telnet 127.0.0.1 80
+Trying 127.0.0.1...
+Connected to localhost.
+Escape character is '^]'.
+
+GET index.html HTTP/1.1
+Host: www.example.com
+
+HTTP/1.1 200 OK
+Server: nginx/1.12.2
+Date: Wed, 16 May 2018 11:44:29 GMT
+Content-Type: text/html
+Content-Length: 173
+Connection: close
+
+<html>
+<\html>
+```
+
+Telnet可以很好的模拟HTTP客户端，但是不能作为服务器使用，但是对Telnet做脚本自动化是非常繁杂的
+
+如果需要更灵活的工具可以尝试nc(netcat), nc可以方便的操作基于UDP和TCP的流量
+
 ## HTTP报文
 
 ### 报文流
