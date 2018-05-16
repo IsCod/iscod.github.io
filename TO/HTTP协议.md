@@ -169,7 +169,7 @@ Trying 127.0.0.1...
 Connected to localhost.
 Escape character is '^]'.
 
-GET index.html HTTP/1.1
+GET /index.html HTTP/1.1
 Host: www.example.com
 
 HTTP/1.1 200 OK
