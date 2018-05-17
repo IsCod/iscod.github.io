@@ -235,13 +235,13 @@ HTTP报文是简单的格式化数据块, 每条报文都包含一条来自客�
 
 ?> 响应报文与请求报文只有起始行不同
 
-- method ([方法](/HTTP协议?id=方法)
+- method (方法)
 
-客户端希望服务器执行的动作, 是一个单独的词如GET, POST
+客户端希望服务器执行的动作, 是一个单独的词如GET, POS等, 参考[方法](/TO/HTTP协议?id=方法)
 
 - request - URL (请求URL)
 
-命名了所有资源，或者URL路径组件的完整URL
+命名了所有资源，或者URL路径组件的完整URL, 参考[统一资源标识符-URI](/TO/HTTP协议?id=统一资源标识符-uri)
 
 - version (版本)
 
@@ -254,7 +254,7 @@ HTTP/<major>.<minor>
 
 status-code (状态码)
 
-这个三位数字描述了请求过程中发生的情况, 每一个状态码的第一个数字用以描述状态的一般分类参考[状态码](/HTTP协议?id=状态码)
+这个三位数字描述了请求过程中发生的情况, 每一个状态码的第一个数字用以描述状态的一般分类, 参考[状态码](/TO/HTTP协议?id=状态码)
 
 - reason-phrase (原因短语)
 
@@ -266,7 +266,7 @@ status-code (状态码)
 
 可以有零个或多个首部组成, 每一个首部都包含一个名字, 后面跟着一个冒号 (:) 然后是一个可选的空格, 接着是一个值, 最后是一个CRLF
 
-首部是由一个空行的 (CRLF) 结束, 表示首部列表的结束和主体部分的开始
+首部是由一个空行的 (CRLF) 结束, 表示首部列表的结束和主体部分的开始, 参考[首部](/TO/HTTP协议?id=首部)
 
 - entity-body (实体的主体部分)
 
@@ -274,49 +274,104 @@ status-code (状态码)
 
 ### 起始行
 
-HTTP响应起始行有三部分组成, 协议HTTP版本、状态码、描述发送状态行
+HTTP报文都由一个起始行开始, 请求报文的起始行说明了要做些什么, 响应报文的起始行说明发生了什么
 
 ### 首部
 
-HTTP报文包含请求和响应报文两部分, 请求和响应都由: 起始行、首部字段、主体三部分组成
+HTTP首部字段向请求和响应添加了一些附加信息，本质上它们是一些名/值对的列表比如Content-Type: text/plain 表示实体的主体部分是text的文本
 
-**起始行**
+**首部分类**
 
-报文的第一行就是起始行, 在请求报文中主要用来说明做些什么, 在响应报文中说明出现了什么情况
+HTTP首部字段分为以下几类
 
-**首部字段**
+- 通用首部
 
-起始行后面有零个或者多个首部字段。每个首部字段都包含一个名字和一个值, 为了便与解析, 两者之间用冒号 (:) 分割。首部字段以空行结束。
+即在请求和响应首部中都可以出现的首部字段
 
-**主体**
+- 请求首部
 
-空行之后就是可选的主体部分, 其中包含了所有类型的数据。请求报文主体中包含要发送给Web服务器的数据, 响应主体中装载了要返回给客户端的数据, 主体可以包含任意的二进制数据 (比如图片, 视频, 音频等) , 当然文本是主体中最常见的。
+提供关于请求的信息
 
-### 请求报文
+- 响应首部
 
-HTTP请求的起始行有方法, 请求地址, 和协议版本字段组成
+提供关于响应的信息
 
-**方法**
-HTTP协议的方法包含POST,GET,PUT,DELETE等方法
+- 实体首部
 
-**例如:**
+描述主体的长度和内容或者资源的首部
 
-```
-POST /index.php HTTP/1.0
-```
+- 扩展首部
 
-HTTP的请求首部字段包含一个名字和一个值, 中间又冒号(:)分割
+规范中没有定义的新扩展字段
 
-常见的请求首部字段包含User-Agent、HOST、Accept、Accept-language、Cache-Control、Connection、Date、Pragma、Transfer-Encoding、Upgrade、Via等
+每一个首部都有一个简单的语法, 名字后面跟一个冒号 (:) , 然后跟上可选的空格, 再加上字段值, 最后是一个CRLF
 
-**例如:**
+常见的首部实例
 
 ```
-Host: example.com
-User-Agent:Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36
+Server: nginx/1.12.2
+Content-Type: text/html
+Content-Length: 173
+Connection: close
 ```
 
-**PHP实例:**
+### 实体的主体部分
+
+HTTP的第三部分是可选的实体部分, 实体的主体是HTTP报文的要传输的内容
+
+HTTP报文可以承载多种类型的数字数据, 包含图片, 文本, 音频, HTML文档, 软件程序生成内容, 电子邮件等
+
+### 完整的HTTP报文
+
+
+请求报文实例
+
+```
+GET /index.html HTTP/1.1
+Host: www.example.com
+
+```
+
+响应报文实例
+
+```
+HTTP/1.1 200 OK
+Server: nginx/1.12.2
+Date: Thu, 17 May 2018 06:38:32 GMT
+Content-Type: application/json
+Transfer-Encoding: chunked
+Connection: keep-alive
+X-Powered-By: PHP/7.0.26
+
+{"status":200,"msg":"not found api"}
+
+```
+
+使用Telnet
+
+```sh
+telnet 127.0.0.1 80
+Trying 127.0.0.1...
+Connected to localhost.
+Escape character is '^]'.
+GET / HTTP/1.1
+Host: www.example.com
+
+HTTP/1.1 200 OK
+Server: nginx/1.12.2
+Date: Thu, 17 May 2018 06:39:08 GMT
+Content-Type: application/json
+Transfer-Encoding: chunked
+Connection: keep-alive
+X-Powered-By: PHP/7.0.26
+
+{"status":200,"msg":"not found api"}
+
+```
+
+?>注意首部和实体部分的分隔符CRLF
+
+PHP发送请求实例:
 
 ```php
 <?php
@@ -352,28 +407,7 @@ User-Agent:Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (K
 ?>
 ```
 
-**HTTP响应报文**
-
-HTTP响应起始行有三部分组成, 协议HTTP版本、状态码、描述发送状态行
-
-**例如:**
-
-```
-HTTP/1.O 404 Not Found
-```
-
-HTTP响应首部字段主要是不能放到状态行的附加信息
-
-**例如:**
-
-```
-Server: Nginx/1.6.3
-Content-length: 403
-Content-type: text/html
-Date:Mon, 05 Sep 2016 07:05:22 GMT
-```
-
-**PHP实例:**
+PHP响应实例:
 
 ```php
 <?php
@@ -462,6 +496,3 @@ AppKey: youAppKey
 AppSecret: youAppSercret
 nickName: 李华
 ```
-
-
-## 连接管理
