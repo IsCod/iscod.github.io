@@ -228,11 +228,38 @@ HTTP报文是简单的格式化数据块, 每条报文都包含一条来自客�
 **响应报文的格式**
 
 ```
-<version> <status> <reason-phrase>
+<version> <status-code> <reason-phrase>
 <headers>
 <entity-body>
 ```
+
 ?> 响应报文与请求报文只有起始行不同
+
+- method (方法)
+
+客户端希望服务器执行的动作, 是一个单独的词如GET, POST
+
+- request - URL (请求URL)
+
+命名了所有资源，或者URL路径组件的完整URL
+
+- version (版本)
+
+报文使用的HTTP版本类似
+
+```
+HTTP/<major>.<minor>
+```
+包含主要版本号 (major) 和次要版本号 (minor) , 切都是整数
+
+status-code (状态码)
+
+这个三位数字描述了请求过程中发生的情况, 每一个状态码的第一个数字用以描述状态的一般分类参考[状态码][#状态码]
+
+reason-phrase (原因短语)
+header (首部)
+entity-body (实体的主体部分)
+
 
 ### 起始行
 
