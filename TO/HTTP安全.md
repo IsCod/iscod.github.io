@@ -100,7 +100,13 @@ cookie的存在也影响缓存, 大多数缓存和浏览器不允许对任何coo
 
 **cookie类型**
 
-可以笼统的将cookie分为两类: **会话cookie**和**持久cookie**, 会话cookie是一种临时cookie
+可以笼统的将cookie分为两类: **会话cookie**和**持久cookie**
+
+会话cookie是一种临时cookie, 它记录了用户访问站点的设置和偏好, 用户退出浏览器时会话cookie就会被删除了
+
+持久cookie的生存时间更长一些, 他们存储在硬盘上, 浏览器退出, 计算机重启时他们仍然存在, 通常会用持久cookie维护某个用户会周期访问的站点配置文件或登录名
+
+会话cookie与持久cookie的唯一区别就是它们的过期时间如果设置了DisCard参数或者没有设置Expires或者Max-Age参数来说明扩展的过期时间, 这个cookie就是一个会话cookie
 
 
 ## 基本认证机制
