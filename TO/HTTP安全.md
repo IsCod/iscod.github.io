@@ -264,7 +264,6 @@ HTTPS是目前最流行的HTTP安全形式, 由网景公司首创, 所有主要�
 ---- |---------------------------------------------------------
      |A|B|C|D|E|F|G|H|I|J|K|L|M|N|O|P|Q|R|S|T|U|V|W|X|Y|Z|A|B|C
 明文 | MNT ME AT THE AT
-
 密文 | PHQW PH DW WKM DW
 
 ## 密码学
