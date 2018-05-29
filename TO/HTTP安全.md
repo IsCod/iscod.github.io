@@ -317,88 +317,89 @@ RSA加解密示例：
 
 ```php
 <?php
-  class Rsa_encrypt{
-    private static $private_key = '-----BEGIN RSA PRIVATE KEY-----
-      MIICXAIBAAKBgQDCKunY6xL9TyNmynkRp5qLG/szrIvyfTku6ZN2TcXhIuVAeOem
-      oYSXX1S3thPaW/JEIWR5RrSUDhULA0d57s7sRCYlopNe8Blenvz81QU2ttFmc070
-      fHhPbspWtPizbo3xYW74Y/0vQOpiOh5qNz6c7dSkzd7GKx7Z+hm9FJQK/QIDAQAB
-      AoGBAKWAGIUJkc0SCHXUPS/cMXFDL3HTMBJHxFcFRuj+z5zftpKmu6UfZTn1Suuw
-      Kenkl3KVF+P7bW4JNsyFRgZblEj4iT84XJCyTt8ztdFUomTwQu4/d8MVt1euI2S4
-      NLw0m2AJHPMDTvzwJlys1XPsAYsDp9GHmP5rm4B3gO4zIoQNAkEA4reLmyiIyR/e
-      NhmlxMP6an8ZGEM881g3FSZeiujQDUdUDX04wq5x7Kl8hYebhau6WGv7kQENlNfP
-      dXbzhQ2JdwJBANs/HaPFE4VqGBtlt1GR+QYuqfjnrNwvzZtk7KZJOfKUg8NGQmwR
-      szgEeUxdyzoZEvaf5r8Jygkb8to8e3EerCsCQFJ9H8FrZSFwg+RBPqwx9hnrdpD6
-      XeHYVepPFJUMEi7SpgVma1GCMRc/r3vSFEb1bY6gc16V+IAQaX4+smnVvA8CQGNe
-      NMnP/Wv/TNPGAxL2TN5Pcfv8zKyzAcYHNPacw6W9SAbOJjaiww6FgJBrBjvbt2uN
-      x2AYSLheMXBV70CyvScCQDvjgNgc/kkqkfW9r3n6qtfWAw/rX+fMFF6t7fa8h6kr
-      fMNyH+ULbWCjiSdabuQuAKBDP9rGmdR/62mYp39l8bE=
-      -----END RSA PRIVATE KEY-----';//私钥
+class Rsa_encrypt{
+  //私钥
+  private static $private_key = '-----BEGIN RSA PRIVATE KEY-----
+    MIICXAIBAAKBgQDCKunY6xL9TyNmynkRp5qLG/szrIvyfTku6ZN2TcXhIuVAeOem
+    oYSXX1S3thPaW/JEIWR5RrSUDhULA0d57s7sRCYlopNe8Blenvz81QU2ttFmc070
+    fHhPbspWtPizbo3xYW74Y/0vQOpiOh5qNz6c7dSkzd7GKx7Z+hm9FJQK/QIDAQAB
+    AoGBAKWAGIUJkc0SCHXUPS/cMXFDL3HTMBJHxFcFRuj+z5zftpKmu6UfZTn1Suuw
+    Kenkl3KVF+P7bW4JNsyFRgZblEj4iT84XJCyTt8ztdFUomTwQu4/d8MVt1euI2S4
+    NLw0m2AJHPMDTvzwJlys1XPsAYsDp9GHmP5rm4B3gO4zIoQNAkEA4reLmyiIyR/e
+    NhmlxMP6an8ZGEM881g3FSZeiujQDUdUDX04wq5x7Kl8hYebhau6WGv7kQENlNfP
+    dXbzhQ2JdwJBANs/HaPFE4VqGBtlt1GR+QYuqfjnrNwvzZtk7KZJOfKUg8NGQmwR
+    szgEeUxdyzoZEvaf5r8Jygkb8to8e3EerCsCQFJ9H8FrZSFwg+RBPqwx9hnrdpD6
+    XeHYVepPFJUMEi7SpgVma1GCMRc/r3vSFEb1bY6gc16V+IAQaX4+smnVvA8CQGNe
+    NMnP/Wv/TNPGAxL2TN5Pcfv8zKyzAcYHNPacw6W9SAbOJjaiww6FgJBrBjvbt2uN
+    x2AYSLheMXBV70CyvScCQDvjgNgc/kkqkfW9r3n6qtfWAw/rX+fMFF6t7fa8h6kr
+    fMNyH+ULbWCjiSdabuQuAKBDP9rGmdR/62mYp39l8bE=
+    -----END RSA PRIVATE KEY-----';
 
-    private static $public_key = '-----BEGIN PUBLIC KEY-----
-      MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDCKunY6xL9TyNmynkRp5qLG/sz
-      rIvyfTku6ZN2TcXhIuVAeOemoYSXX1S3thPaW/JEIWR5RrSUDhULA0d57s7sRCYl
-      opNe8Blenvz81QU2ttFmc070fHhPbspWtPizbo3xYW74Y/0vQOpiOh5qNz6c7dSk
-      zd7GKx7Z+hm9FJQK/QIDAQAB
-      -----END PUBLIC KEY-----';//公钥
+  //公钥
+  private static $public_key = '-----BEGIN PUBLIC KEY-----
+    MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDCKunY6xL9TyNmynkRp5qLG/sz
+    rIvyfTku6ZN2TcXhIuVAeOemoYSXX1S3thPaW/JEIWR5RrSUDhULA0d57s7sRCYl
+    opNe8Blenvz81QU2ttFmc070fHhPbspWtPizbo3xYW74Y/0vQOpiOh5qNz6c7dSk
+    zd7GKx7Z+hm9FJQK/QIDAQAB
+    -----END PUBLIC KEY-----';
 
-    public function __construct() {
-      //construct
-    }
-
-    /**
-    * 使用密钥编码
-    */
-    public function encode($data = array(), $block_size = 200) {
-        $encrypted = '';
-
-        $data = (string)json_encode($data);
-        $plainData = str_split($data, $block_size);
-        if (!$plainData) return FALSE;
-
-        $privateKey = openssl_pkey_get_private($this->private_key);
-
-        if (!$privateKey) return FALSE;
-
-        foreach($plainData as $chunk)
-        {
-            $partialEncrypted = '';
-
-            //using for example OPENSSL_PKCS1_PADDING as padding
-            $encryptionOk = openssl_private_encrypt($chunk, $partialEncrypted, $privateKey, OPENSSL_PKCS1_PADDING);
-
-            if($encryptionOk === false){return FALSE;}//also you can return and error. If too big this will be false
-            $encrypted .= $partialEncrypted;
-        }
-
-        return base64_encode($encrypted);
-    }
-
-    /**
-    *使用公钥解码
-    *解码来自客户端公钥的密文
-    * @param string $str密文
-    * @return $data 明文变量
-    public function decode($sign = '', $block_size = 256){
-        $decrypted = '';
-
-        //decode must be done before spliting for getting the binary String
-        $data = str_split(base64_decode($sign), $block_size);
-        if (!$data) return $decrypted;
-
-        $publicKey = openssl_pkey_get_public($this->public_key);
-        if(!$publicKey) return $decrypted;
-
-        foreach($data as $chunk)
-        {
-            $partial = '';
-            //be sure to match padding
-            $decryptionOK = openssl_public_decrypt($chunk, $partial, $publicKey, OPENSSL_PKCS1_PADDING);
-            if($decryptionOK === false){return FALSE;}//here also processed errors in decryption. If too big this will be false
-            $decrypted .= $partial;
-        }
-
-        return json_decode($decrypted);
-    }
+  public function __construct() {
+    //construct
   }
-?>
+
+  /**
+  * 使用密钥编码
+  */
+  public function encode($data = array(), $block_size = 200) {
+      $encrypted = '';
+
+      $data = (string)json_encode($data);
+      $plainData = str_split($data, $block_size);
+      if (!$plainData) return FALSE;
+
+      $privateKey = openssl_pkey_get_private($this->private_key);
+
+      if (!$privateKey) return FALSE;
+
+      foreach($plainData as $chunk)
+      {
+          $partialEncrypted = '';
+
+          //using for example OPENSSL_PKCS1_PADDING as padding
+          $encryptionOk = openssl_private_encrypt($chunk, $partialEncrypted, $privateKey, OPENSSL_PKCS1_PADDING);
+
+          if($encryptionOk === false){return FALSE;}//also you can return and error. If too big this will be false
+          $encrypted .= $partialEncrypted;
+      }
+
+      return base64_encode($encrypted);
+  }
+
+  /**
+  *使用公钥解码
+  *解码来自客户端公钥的密文
+  * @param string $str密文
+  * @return $data 明文变量
+  public function decode($sign = '', $block_size = 256){
+      $decrypted = '';
+
+      //decode must be done before spliting for getting the binary String
+      $data = str_split(base64_decode($sign), $block_size);
+      if (!$data) return $decrypted;
+
+      $publicKey = openssl_pkey_get_public($this->public_key);
+      if(!$publicKey) return $decrypted;
+
+      foreach($data as $chunk)
+      {
+          $partial = '';
+          //be sure to match padding
+          $decryptionOK = openssl_public_decrypt($chunk, $partial, $publicKey, OPENSSL_PKCS1_PADDING);
+          if($decryptionOK === false){return FALSE;}//here also processed errors in decryption. If too big this will be false
+          $decrypted .= $partial;
+      }
+
+      return json_decode($decrypted);
+  }
+}
 ```
