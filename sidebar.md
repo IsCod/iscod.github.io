@@ -5,6 +5,7 @@
   * [REDIS](TO/REDIS.md)
   * [AJAX](TO/AJAX.md)
   * [算法](TO/算法.md)
+  * [数据架构](TO/数据架构.md)
 
 * 经济学
   * [经济学十大原理](EO/经济学十大原理.md)
