@@ -211,14 +211,32 @@ Date: Wed, 16 May 2018 11:44:29 GMT
 Content-Type: text/html
 Content-Length: 173
 Connection: close
+X-Powered-By: PHP/7.0.26
 
-<html>
-<\html>
+{"status":200,"msg":"not found api"}
 ```
 
 Telnet可以很好的模拟HTTP客户端, 但是不能作为服务器使用, 但是对Telnet做脚本自动化是非常繁杂的
 
 如果需要更灵活的工具可以尝试nc(netcat), nc可以方便的操作基于UDP和TCP的流量
+
+使用nc
+
+```sh
+nc 127.0.0.1 80
+GET /index.html HTTP/1.1
+Host: www.example.com
+
+HTTP/1.1 200 OK
+Server: nginx/1.12.2
+Date: Wed, 16 May 2018 11:44:29 GMT
+Content-Type: text/html
+Content-Length: 173
+Connection: close
+X-Powered-By: PHP/7.0.26
+
+{"status":200,"msg":"not found api"}
+```
 
 ## HTTP报文
 
