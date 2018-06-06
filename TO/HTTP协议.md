@@ -73,7 +73,7 @@ urn:iscod:rfa:1234
 
 ### 事务
 
-一个完整的HTTP事务由一条从客户端发起的请求命令和一个服务器发回客户端的相应结果组成
+一个完整的HTTP事务由一条从客户端发起的请求命令和一个服务器发回客户端的响应结果组成
 
 这种通信通过名为HTTP报文的格式化数据块进行交流
 
@@ -97,11 +97,9 @@ HTTP支持不同的请求命令, 这些命令称为HTTP方法 (method)
 
 	使用HEAD可以:
 
-	```
-	在不获取资源的情况下了解资源情况 (判断类型等)
-	查看响应码, 看某个对象是否存在
-	通过查看首部, 判断资源是否被修改
-	```
+	- 在不获取资源的情况下了解资源情况 (判断类型等)
+	- 查看响应码, 看某个对象是否存在
+	- 通过查看首部, 判断资源是否被修改
 
 - PUT 
 
@@ -405,6 +403,22 @@ X-Powered-By: PHP/7.0.26
 ```
 
 ?>注意首部和实体部分的分隔符CRLF
+
+使用nc
+```sh
+nc 127.0.0.1 80
+GET / HTTP/1.0
+HOST:www.example.com
+
+HTTP/1.1 200 OK
+Server: nginx/1.12.2
+Date: Wed, 06 Jun 2018 05:54:28 GMT
+Content-Type: application/json
+Connection: close
+X-Powered-By: PHP/7.0.26
+
+{"status":200,"msg":"not found api"}
+```
 
 PHP发送请求实例:
 
