@@ -17,7 +17,7 @@
 
 ## Future
 
-* 未来在哪里？
+* [未来在哪里？](https://iscod.github.io/#/Life/未来在哪里)
 * [哲学](https://iscod.github.io/#/Life/哲学)
 * [经济学](https://iscod.github.io/#/EO/经济学十大原理)
 * [计算机科学](https://iscod.github.io/#/TO/HTTP安全)
