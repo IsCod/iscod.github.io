@@ -11,23 +11,16 @@
 
 ## Life
 
-* 生活是什么？
-* 为什么选择这个？
-* 有没有替代?
+* [Life？](https://iscod.github.io/#/Life/生活是什么)
+* [赚钱是最容易的事？](https://iscod.github.io/#/Life/赚钱)
+* [知道自己笨才是真的聪明？](https://iscod.github.io/#/Life/知道自己笨才是真的聪明)
 
 ## Future
 
 * 未来在哪里？
-
-* 这是一个哲学问题
-
-* 经济学
-
-经济学是研究社会如何其资源的学科
-
-* 计算机科学
-
-* 文学
+* [哲学](https://iscod.github.io/#/Life/哲学)
+* [经济学](https://iscod.github.io/#/EO/经济学十大原理)
+* [计算机科学](https://iscod.github.io/#/TO/HTTP安全)
 
 [blog_iscod]: https://iscod.github.io
 [lofter_iscod]:http://iscod.lofter.com
