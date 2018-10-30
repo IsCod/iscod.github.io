@@ -7,7 +7,7 @@
 * 这是什么?
 * 有什么特点？
 
-传送门：[github.iscod][github_iscod]，[Lofter.isocd][lofter_iscod]，[blog.iscod][blog_iscod]
+传送门：[Github.iscod][github_iscod]，[Lofter.isocd][lofter_iscod]，[Blog.iscod][blog_iscod]
 
 ## Life
 
