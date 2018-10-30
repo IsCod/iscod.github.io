@@ -7,7 +7,7 @@
 * 这是什么?
 * 有什么特点？
 
-传送门：[Iscod Lofter][iscod_lofter]，[Isocd blog][iscod_blog]
+传送门：[github.iscod][github_iscod]，[Lofter.isocd][lofter_iscod]，[blog.iscod][blog_iscod]
 
 ## Life
 
@@ -29,5 +29,6 @@
 
 * 文学
 
-[iscod_blog]: http://iscod.github.io
-[iscod_lofter]:http://iscod.lofter.com
+[blog_iscod]: https://iscod.github.io
+[lofter_iscod]:http://iscod.lofter.com
+[github_iscod]:https://github.com/iscod
