@@ -258,8 +258,6 @@ HTTPS是目前最流行的HTTP安全形式, 由网景公司首创, 所有主要�
 
 使用HTTPS时, 所有的HTTP请求和响应数据在发送到网络前都进行了加密, HTTPS在HTTP协议下面提供一个传输级的密码安全层, 一般使用SSL或者TLS. 由于大部分困难的编码和解码工作由SSL库完成, 所以web客户端和服务器在使用安全的HTTP时无需做太多的修改协议处理逻辑. 大多数情况下, 只需要用SSL的输入/输出调用取代TCP的调用, 再增加几个调用来配置管理安全信息就可以了
 
-### 数字加密
-
 介绍HTTPS之前，我们了解一下SSL和HTTPS用到的加密编码技术背景知识
 
 - 密码 (对文本进行编码，使偷窥者无法识别的算法)
@@ -273,6 +271,8 @@ HTTPS是目前最流行的HTTP安全形式, 由网景公司首创, 所有主要�
 - 数字签名 (用来验证报文未被伪造或篡改的校验和)
 
 - 数字证书 (由一个可信的组织验证和签发的识别信息)
+
+### 数字加密
 
 **密码编制的机制和技巧**
 
@@ -356,97 +356,6 @@ HTTPS是目前最流行的HTTP安全形式, 由网景公司首创, 所有主要�
 
 RSA算法就是满足了所有这些条件的流行的公开密钥加密系统, 它是在MIT发明后由RSA数据安全公司将其商业化. 即使有了上述所有条件, RSA算法自身, 甚至RSA实现的源代码, 破解代码找到相应的私有密钥的难度仍相当于对一个极大的数进行质因子分解的困难程度, 这被认为是所有计算机科学中最难的问题之一. 因此如果你发现一种快速将一个极大的数分解为质因数的方法, 不仅能够入侵瑞士银行账户系统, 而且可以获得图灵奖了
 
-RSA加解密示例：
-
-```php
-<?php
-class Rsa_encrypt{
-  //私钥
-  private static $private_key = '-----BEGIN RSA PRIVATE KEY-----
-    MIICXAIBAAKBgQDCKunY6xL9TyNmynkRp5qLG/szrIvyfTku6ZN2TcXhIuVAeOem
-    oYSXX1S3thPaW/JEIWR5RrSUDhULA0d57s7sRCYlopNe8Blenvz81QU2ttFmc070
-    fHhPbspWtPizbo3xYW74Y/0vQOpiOh5qNz6c7dSkzd7GKx7Z+hm9FJQK/QIDAQAB
-    AoGBAKWAGIUJkc0SCHXUPS/cMXFDL3HTMBJHxFcFRuj+z5zftpKmu6UfZTn1Suuw
-    Kenkl3KVF+P7bW4JNsyFRgZblEj4iT84XJCyTt8ztdFUomTwQu4/d8MVt1euI2S4
-    NLw0m2AJHPMDTvzwJlys1XPsAYsDp9GHmP5rm4B3gO4zIoQNAkEA4reLmyiIyR/e
-    NhmlxMP6an8ZGEM881g3FSZeiujQDUdUDX04wq5x7Kl8hYebhau6WGv7kQENlNfP
-    dXbzhQ2JdwJBANs/HaPFE4VqGBtlt1GR+QYuqfjnrNwvzZtk7KZJOfKUg8NGQmwR
-    szgEeUxdyzoZEvaf5r8Jygkb8to8e3EerCsCQFJ9H8FrZSFwg+RBPqwx9hnrdpD6
-    XeHYVepPFJUMEi7SpgVma1GCMRc/r3vSFEb1bY6gc16V+IAQaX4+smnVvA8CQGNe
-    NMnP/Wv/TNPGAxL2TN5Pcfv8zKyzAcYHNPacw6W9SAbOJjaiww6FgJBrBjvbt2uN
-    x2AYSLheMXBV70CyvScCQDvjgNgc/kkqkfW9r3n6qtfWAw/rX+fMFF6t7fa8h6kr
-    fMNyH+ULbWCjiSdabuQuAKBDP9rGmdR/62mYp39l8bE=
-    -----END RSA PRIVATE KEY-----';
-
-  //公钥
-  private static $public_key = '-----BEGIN PUBLIC KEY-----
-    MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDCKunY6xL9TyNmynkRp5qLG/sz
-    rIvyfTku6ZN2TcXhIuVAeOemoYSXX1S3thPaW/JEIWR5RrSUDhULA0d57s7sRCYl
-    opNe8Blenvz81QU2ttFmc070fHhPbspWtPizbo3xYW74Y/0vQOpiOh5qNz6c7dSk
-    zd7GKx7Z+hm9FJQK/QIDAQAB
-    -----END PUBLIC KEY-----';
-
-  public function __construct() {
-    //construct
-  }
-
-  /**
-  * 使用密钥编码
-  */
-  public function encode($data = array(), $block_size = 200) {
-      $encrypted = '';
-
-      $data = (string)json_encode($data);
-      $plainData = str_split($data, $block_size);
-      if (!$plainData) return FALSE;
-
-      $privateKey = openssl_pkey_get_private($this->private_key);
-
-      if (!$privateKey) return FALSE;
-
-      foreach($plainData as $chunk)
-      {
-          $partialEncrypted = '';
-
-          //using for example OPENSSL_PKCS1_PADDING as padding
-          $encryptionOk = openssl_private_encrypt($chunk, $partialEncrypted, $privateKey, OPENSSL_PKCS1_PADDING);
-
-          if($encryptionOk === false){return FALSE;}//also you can return and error. If too big this will be false
-          $encrypted .= $partialEncrypted;
-      }
-
-      return base64_encode($encrypted);
-  }
-
-  /**
-  *使用公钥解码
-  *解码来自客户端公钥的密文
-  * @param string $str密文
-  * @return $data 明文变量
-  public function decode($sign = '', $block_size = 256){
-      $decrypted = '';
-
-      //decode must be done before spliting for getting the binary String
-      $data = str_split(base64_decode($sign), $block_size);
-      if (!$data) return $decrypted;
-
-      $publicKey = openssl_pkey_get_public($this->public_key);
-      if(!$publicKey) return $decrypted;
-
-      foreach($data as $chunk)
-      {
-          $partial = '';
-          //be sure to match padding
-          $decryptionOK = openssl_public_decrypt($chunk, $partial, $publicKey, OPENSSL_PKCS1_PADDING);
-          if($decryptionOK === false){return FALSE;}//here also processed errors in decryption. If too big this will be false
-          $decrypted .= $partial;
-      }
-
-      return json_decode($decrypted);
-  }
-}
-```
-
 ### 数字签名
 
 以上我们讨论了使用对称和非对称密钥加/解密保密报文的密钥加密技术
@@ -458,7 +367,7 @@ class Rsa_encrypt{
 - 签名可以证明是作者编写了这条报文
 - 签名可以防止报文被篡改
 
-数字签名通常是用于非对称公开密钥技术产生的. 因为之后所有者才知道其私有密钥, 所以可以将作者的私有密钥当做一种"指纹"使用
+数字签名通常是用于非对称公开密钥技术产生的. 因为只有所有者才知道其私有密钥, 所以可以将作者的私有密钥当做一种"指纹"使用
 
 举个例子：
 
@@ -466,3 +375,19 @@ class Rsa_encrypt{
 - 节点A对摘要应用了一个"签名"函数, 这个函数会将用户的私有密钥作为参数, 因为只有用户才知道私有密钥, 所以正确的签名函数会说明签名者就是其所有者
 - 一单计算出签名, A节点就将其附加在报文末尾, 并将报文和签名发送给B
 - 在接收端, 如果B节点需要确定报文确实是A节点写的, 而且没有被篡改过, B可以对签名进行检查. B接收到私有密钥扰码的签名, 并应用了使用公开密钥的反函数, 如果拆包后的摘要与节点B自己的摘要版本不匹配, 要么是报文在传输过程中被篡改了, 要么是发送端没有节点A的私有密钥（也就说不是A节点）
+
+### HTTPS
+
+*HTTPS*是常见的HTTP安全版本, 它得到了广泛的应用, 所有主流的商业浏览器和服务器上都实现了HTTPS
+
+HTTPS是在安全的传输层上发送的HTTP, HTTPS没有将未加密的HTTP报文发送给TCP, 它在将HTTP报文发送给TCP之前, 将其发送给一个安全层, 对其进行加密
+
+?> HTTP安全层是通过SSL及其替代协议TLS来实现
+
+**建立安全传输**
+
+在未加密的HTTP中,客户端会打开一条连接到web服务器端口80的tcp连接, 发送一条报文, 接受一条响应报文, 关闭连接
+
+由于SSL安全层的存在, HTTPS中客户端首先打开一条到web服务器443端口(HTTPS默认端口)的连接, 一旦建立了TCP连接, 客户端和服务端就会初始化SSL层, 对加密参数进行沟通, 并交换密钥. 握手完成之后, SSL初始化就完成了, 客户端就可以将请求发送给安全层了. 将这些报文发送给TCP之前, 对其进行加密
+
+
