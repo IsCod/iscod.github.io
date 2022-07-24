@@ -13,7 +13,9 @@
     * [Protobuf](data_marshal/protobuf.md)
     * [Xml](data_marshal/xml.md)
 * golang
-    * [切片](golang/slice.md)
+    * [chan](golang/chan.md)
+    * [杂谈](golang/golang.md)
+    <!-- * [调度器](golang/goroutine.md) -->
 * Devops
     * [Jenkins](devops/jenkins.md)
     * [walle](devops/walle.md)
