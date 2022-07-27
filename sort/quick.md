@@ -58,41 +58,35 @@ package main
 
 import "fmt"
 
-func quickSort(arr []int, pivot int) []int {
-	if len(arr) < 1 {
-		return []int{pivot}
-	}
-	var leftArr, rightArr, returnArr []int
-	for _, v := range arr {
-		if v > pivot {
-			leftArr = append(leftArr, v)
-		} else {
-			rightArr = append(rightArr, v)
-		}
-	}
+func quickSort(s []int, pivot int) []int {
+    if len(s) <= 1 {
+        return s
+    }
+    var left, right, ps []int
+    for _, v := range s {
+        if v < pivot {
+            left = append(left, v)
+        }
+        if v > pivot {
+            right = append(right, v)
+        }
+        if v == pivot {
+            ps = append(ps, pivot)
+        }
+    }
+    if len(left) > 0 {
+        left = quickSort(left, left[0])
+    }
+    if len(right) > 0 {
+        right = quickSort(right, right[0])
+    }
 
-	if len(leftArr) > 0 {
-		leftArr = quickSort(leftArr[1:], leftArr[0])
-	}
-	if len(rightArr) > 0 {
-		rightArr = quickSort(rightArr[1:], rightArr[0])
-	}
-
-	for _, i := range rightArr {
-		returnArr = append(returnArr, i)
-	}
-	returnArr = append(returnArr, pivot)
-
-	for _, i := range leftArr {
-		returnArr = append(returnArr, i)
-	}
-	return returnArr
+    return append(append(left, ps...), right...)
 }
 
 func main() {
-	var arr = []int{10, 6, 11, 100, 21, 7, 4, 89, 70, 10}
-	sArr := quickSort(arr[1:], arr[0])
-	fmt.Printf("%d", sArr)
+    var slice = []int{10, 6, 11, 100, 21, 7, 4, 89, 70, 10}
+    fmt.Println(quickSort(slice, slice[0]))
 }
 ```
 

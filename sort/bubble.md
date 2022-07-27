@@ -54,27 +54,23 @@ Golang:
 ```go
 package main
 
-import (
-	"fmt"
-)
+import "fmt"
 
-func main() {
-	var arr = []int{10, 6, 11, 21, 7}
-	for i := 0; i < len(arr); i++ {
-		for j := i; j < len(arr); j++ {
-			arr[i], arr[j] = BubbleSort(arr[i], arr[j])
-		}
-	}
-
-	fmt.Printf("%d\n", arr)
+func BubbleSort(s []int) []int {
+    for i := 0; i < len(s); i++ {
+        for j := 0; j < i; j++ {
+            if s[i] < s[j] {
+                s[i], s[j] = s[j], s[i]
+            }
+        }
+    }
+    return s
 }
 
-func BubbleSort(a, b int) (int, int) {
-	if a < b {
-		return a, b
-	} else {
-		return b, a
-	}
+func main() {
+    var slice = []int{10, 6, 11, 21, 7}
+    fmt.Println(BubbleSort(slice))
+
 }
 ```
 
