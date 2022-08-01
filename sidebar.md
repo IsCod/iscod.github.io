@@ -13,6 +13,7 @@
     * [Protobuf](data_marshal/protobuf.md)
     * [Xml](data_marshal/xml.md)
 * golang
+    * [interview](golang/interview.md)
     * [CSP通讯](golang/csp.md)
     * [GMP](golang/gmp.md)
     * [杂谈](golang/golang.md)
