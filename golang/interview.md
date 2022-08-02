@@ -1,4 +1,4 @@
-###值类型&引用类型传递
+### 值类型&引用类型传递
 
 引用类型传递: `map`, `slice`, `interface`, `chan`, `pointer` 
 
@@ -9,6 +9,25 @@
 ```go
 	var ch, sl, ma = make(chan int), make([]int, 0), make(map[int]int)
 ```
+
+* make, new 的区别
+
+1. make 只能创建三种类型，new 可以创建任意类型
+2. make返回的是Type对象，new 返回的是Type指针
+
+### 控制并发控制的三种模式
+
+1. 通过`chan`进行控制
+1. 通过`Waitgroup`进行控制
+1. 通过`Context`上下文进行控制
+
+
+### gRPC
+
+gRPC是RPC框架的一种实现，RPC是一种远程服务调用，RPC负责底层的通信协议和序列化方式。服务调用者可以想调用本地函数一样调用远程服务。
+gRPC对接口与严格的约束，安全性高，且更适合高并发场景
+
+rest，是网络中的clinet和server的交互形式
 
 ### 读写锁
 
