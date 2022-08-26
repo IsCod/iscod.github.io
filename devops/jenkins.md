@@ -59,6 +59,22 @@ agent {
 
 steps 部分在给定的 stage 指令中执行的定义了一系列的一个或多个steps。
 
+
+## kubernetes持续集成
+
+![jenkins-kubernetes](https://iscod.github.io/images/jenkins-kubernetes.png)
+
+### 流程说明
+
+1. 用户向Gitlab提交代码，代码中可以包含Dockerfile
+2. 将代码提交到远程仓库
+3. 童虎在发布应用时需要填写git仓库的地址和分支、服务类型、服务名称、资源数量、实例个数、确定后触发Jenkins自动构建
+4. Jenkins的CI流水线自动编译代码，并打包docker镜像（如Harbor镜像仓库）
+5. Jenkins的CI流水线中包含了自定义脚本，根据已经准备好的kubernetes的YAML模版，将其中的变量替换成用户输入的选项生成应用的Kubernetes YAML配置文件
+6. 更新Ingress配置，根据新部署的应用名称，在Ingress的配置文件中增加一条路由信息
+7. 更新PowerDNS，向其中插入一条DNS记录。IP地址是边缘节点的IP地址
+8. Jenkins调用kubernetes的API，部署应用
+
 ## 示例
 ```jenkins
 pipeline {
@@ -101,3 +117,5 @@ pipeline {
 
 * 参考
     * [Jenkins](https://www.jenkins.io/zh/doc/book/pipeline/)
+    * [jenkins-ci-cd](https://www.bookstack.cn/read/kubernetes-handbook-201910/practice-jenkins-ci-cd.md)
+    * [jenkins-kubernetes](https://plugins.jenkins.io/kubernetes/)
