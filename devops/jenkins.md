@@ -75,6 +75,10 @@ steps 部分在给定的 stage 指令中执行的定义了一系列的一个或�
 7. 更新PowerDNS，向其中插入一条DNS记录。IP地址是边缘节点的IP地址
 8. Jenkins调用kubernetes的API，部署应用
 
+### jenkins-X
+
+[jenkins-X](https://jenkins-x.io/zh/)是一个基于 Jenkins 和 Kubernetes 的 CI/CD 平台，旨在解决微服务架构下云原生应用的持续集成和持续交付问题
+
 ## 示例
 ```jenkins
 pipeline {
@@ -119,3 +123,4 @@ pipeline {
     * [Jenkins](https://www.jenkins.io/zh/doc/book/pipeline/)
     * [jenkins-ci-cd](https://www.bookstack.cn/read/kubernetes-handbook-201910/practice-jenkins-ci-cd.md)
     * [jenkins-kubernetes](https://plugins.jenkins.io/kubernetes/)
+    * [jenkins-x](https://jenkins-x.io/zh/)
