@@ -91,5 +91,11 @@ func chanrecv(c *hchan, ep unsafe.Pointer, block bool) (selected, received bool)
 
 读函数仅在`c.closed != 0` 和 `c.qcount == 0`时返回false。即：当`buffer`内无元素时返回元素值0，和第二返回值false
 
+## 并发
+
+`goroutine`和`chan`是`golang`实现并发的关键
+
+* 参考
+	* [Concurrency is not Parallelism](https://go.dev/talks/2012/waza.slide#1)
 
 
