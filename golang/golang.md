@@ -11,7 +11,7 @@
 
 在函数中传参，如果是值类型传递，修改被传递的参数，函数内修改不会影响原有变量. 如果是引用类型传递，函数内修改参数会影响原值
 
-> 引用类型初始化时，都可赋值为`nil`, 而值类型不能初始化为`nil`
+> 引用类型初始化时，都可赋值为`nil`, 而值类型不能初始化为`nil`。引用类型结构的数据都是通过`unsafe.Pointer`指针来指向底层数据，因此可以赋值为`nil`
 
 ```go
 func change(slice []int) {
@@ -165,6 +165,42 @@ func main() {
 0 1 zz zz zz 5 6
 ```
 
+##  更好的 begin time
+
+在业务中经常有需求要获取当天的凌晨时间，或者根据一个时间计算出该时间的凌晨时间点。
+
+一般程序想到的是通过`time.ParseInLocation`结合`time.Now().Format`来使用，这种方式简单容易理解
+
+```go
+func GetTodayBegin() int64 {
+	timeStr := time.Now().Format("2006-01-02")
+	t, _ := time.ParseInLocation("2006-01-02 15:04:05", timeStr+" 00:00:00", time.Local)
+	return t.Unix()
+}
+```
+
+而好的程序可能会思考，`time`需要进行两次`string`类型转换才能得到结果，这中间可能会有巨大的性能优化空间，如果不进行类型转换，性能是否会更好？
+
+```go
+func GetTodayBeginModify() int64 {
+	t := time.Now()
+	_, offset := t.Local().Zone()
+	return t.Unix() - int64(offset) - t.Unix()%86400
+}
+```
+
+
+基准测试结果:
+```sh
+goos: darwin
+goarch: amd64
+BenchmarkGetDayBegin-8          15347680               390.8 ns/op
+BenchmarkGetDayBeginModify-8    51300466               118.8 ns/op
+```
+
+可以看到减少两次类型的转换，就换来成倍的性能提升，如此还是值得进行一次优化
+
+
 ## unsafe.Pointer
 
 `unsafe`包提供了两个重要的能力：
@@ -248,7 +284,6 @@ func main() {
 	}()
 	wg.Wait()
 }
-
 ```
 
 
@@ -295,6 +330,67 @@ func main() {
 	wg.Wait()
 }
 ```
+
+## atomic & sync.Mutex
+
+`atomic`提供了三种常用接口
+
+1. `Add` 原子地将*delta*添加到*addr*并返回新值。
+1. `CSA` 对值执行比较和交换操作。如果值与比较值相同则交换为设定的新值
+1. `Store` 原子地将*val*存储到*addr*中，一般配合`atomic.Value`结构使用
+
+
+`atomic`与`sync.Mutex`都可以实现并发模型下的数据安全，但是他们的应用场景偏向不同。
+
+> `atomic`偏向于变量或者资源的更新保护。`sync.Mutex`偏向于保护一段逻辑处理。`sync.Mutex`底层也是通过`atomic`实现
+
+
+```go
+package main
+
+import (
+	"fmt"
+	"sync"
+	"sync/atomic"
+)
+
+func SumMu() {
+	var count int
+	wg := sync.WaitGroup{}
+	mu := sync.Mutex{}
+	for i := 0; i < 1000; i++ {
+		wg.Add(1)
+		go func() {
+			mu.Lock()
+			count += 1
+			wg.Done()
+			mu.Unlock()
+		}()
+	}
+	wg.Wait()
+	fmt.Println(count)
+}
+
+func SumAtomic() {
+	var count int32
+	wg := sync.WaitGroup{}
+	for i := 0; i < 1000; i++ {
+		wg.Add(1)
+		go func() {
+			atomic.AddInt32(&count, 1)
+			wg.Done()
+		}()
+	}
+	wg.Wait()
+	fmt.Println(count)
+}
+
+func main() {
+	SumMu()
+	SumAtomic()
+}
+```
+
 
 ## 内存回收
 

@@ -262,6 +262,66 @@ OK
 
 对象`A` 的键值为 `1`时, `A`的对象引用计数是 `1`。当A的键值设置 `100001` 时，引用计数为 `1`
 
+## 发现和处理大Key、热Key
+
+### 什么是大Key、热Key?
+
+*大Key*分为两种情况：
+
+1. Key的value比较大，例如一个`string`类型的Key大小超过10MB，或者一个集合类型（Hash,List,Set等）元素总大小超过100MB。一般单个`string`类型的key大小超过10MB，集合类型的key总大小超过50MB，则定义为大Key。
+1. Key的元素比较多，例如一个Hash类型的Key，其元素数量超过10000，一般定义集合类型的key元素超过5000个，则认为其为大Key
+
+*热Key*
+
+`热Key`通常以一个`key`被操作的频率和占用的资源判断例如：
+
+* 某一个集群实例一个分片每秒处理10000次请求，其中有3000次都是操作同一个`Key`
+* 某一个集群实例一个分片的总宽带使用（入带宽+出带宽）为100Mbits/s，其中80Mbits/s都是对某个Hash类型的key执行GETALL所占用
+
+> 大Key和热Key并没有明确的业务边界，通常根据实际业务判断
+
+### 如何发现大Key和热Key？
+
+1. 自Redis4.0版本起，可以通过redis-cli的bigkeys和hotkeys参数查找大Key和热Key
+1. 通过[redis-rdb-tools](https://github.com/sripathikrishnan/redis-rdb-tools?spm=a2c4g.11186623.0.0.140745d6UhJnC6)工具找出大Key
+
+```bash
+# redis-cli -h 127.0.0.1 --bigkeys //redis-cli查找bigkeys
+# redis-cli -h 127.0.0.1 --hotkeys //redis-cli查找hotkeys
+```
+
+### 如何优化大Key和热Key
+
+针对大Key一般采用三种种方案：
+
+1. 进行大Key拆分
+
+    * 对象为string类型的大Key，尝试分为多个 key-value ,使用`MGET`或`GET`组成的`pipeline`获取值，分拆单次操作压力，对于集群来说可以将操作压力分摊到多个分片上，降低对单个分片的影响
+    * 对象为集合类型的大Key，只能整存整取的在设计上严格禁止这种场景出现，因为无法拆分，其有效方法是将该大Key存放到其它存储介质上
+    * 对象为集合类型的大Key，可以部分操作元素的，可将集合类型中的元素拆分，以Hash类型为例，可以在客户端定义一个拆分规则（如计算哈希值取模），每次对`HGET`和`HSET`操作前根据计算规则找到相应的KEY在进行操作，类似与Redis Cluster计算slot的算法。
+
+1. 将大Key单独转移到其它存储介质
+
+    无法拆分的大Key建议使用这种方法，将不适用Redis能力的数据存储到其它存储介质，如其它的NoSql数据库，并在redis中删除该大Key
+
+1. 合理设置过期时间并对过期数据进行处理
+
+    合理设置过期时间，避免历史数据在redis中大量堆积。由于redis的惰性删除策略，过期数据可能不及时清理。可以手动进行过期Key扫描处理
+
+针对热Key有以下几种方案：
+
+1. 使用读写分离
+
+    如果热Key的主要原因是读流量较大，那么可以在客户端配置读写分离，降低对主节点的影响。还可以增加多个副本满足读写需求。缺点是在备节点数量较多的情况下，主节点的CPU和网络负载会较高。
+
+1. 使用客户端缓存/本地缓存
+
+    设计客户端/本地和远端Redis两级缓存架构，热点数据优先本地缓存获取，写入时同步更新，这样能够分担热点数据的大部分读压力。缺点是需要修改客户端架构和业务代码，业务冗余成本较高
+
+1. 设计熔断/降级机制
+
+    热Key极其容易造成缓存击穿，高峰期请求都直接透传到后端数据库上，从而导致业务雪崩。因此热Key的优化一定需要设计系统的熔断/降级机制，在发生击穿的场景下进行限流和服务降级，保护系统的可用性
+
 ## Lua脚本
 
 Redis 通过`EVAL`命令来执行`lua`脚本, 使用`lua`脚本可以很方便的获取`Redis`多个命令的结果，比如`ZSCORE`获取多个`member`的结果时。
@@ -277,10 +337,65 @@ EVAL的第二个参数是`key`的个数，后面的参数（从第三个参数�
 举例说明：
 
 ```bash
-127.0.0.1:6379[1]> eval "local res={} for i,v in ipairs(ARGV) do res[i]=Redis.call('ZSCORE', KEYS[1], v); end return res" 1 key member1 member2 member3
+127.0.0.1:6379[1]> eval "local res={} for i,v in ipairs(ARGV) do res[i]=redis.call('ZSCORE', KEYS[1], v); end return res" 1 key member1 member2 member3
 ```
 
 > Redis cluster 环境下使用要保证所有的`key`在同一个`slot`, 否则会报`ERR 'EVAL' command keys must in same slot`
+
+
+#### Lua table编码存储
+
+`cjson`和`cmsgpack`都可以实现`lua table`编码后存储到redis内。`cmsgpack`比`json`占用存储更小，且编码更快。但是相比`json`的可读行更差
+
+```bash
+127.0.0.1:6379> EVAL "local user={};user[1]={};user[1][100]='hjhj'; return redis.pcall('SET', 'user', cmsgpack.pack(user))" 0
+127.0.0.1:6379> get user
+"\x91\x81d\xa4hjhj"
+127.0.0.1:6379> EVAL "local user=cmsgpack.unpack(redis.call('get', 'user')); return user[1][100]" 0 //解码获取user[1][100]
+"hjhj"
+```
+
+> 使用数字键解码 JSON 对象后必须小心。每个数字键都将存储为 Lua字符串。任何假设类型编号的后续代码都可能会中断。
+
+
+## lua实现分布式锁
+
+lua 分布式锁的关键是在锁不存在的时候，才能去设置锁，并设置一个过期时间，防止其他程序长时间无法获取锁
+
+```lua
+local key = KEYS[1]
+local required = KEYS[2]
+local ttl = tonumber(KEYS[3])
+local result = redis.call('SETNX', key, required)
+
+if result == 1 then
+    --设置成功，则设置过期时间
+    redis.call('PEXPIRE', key, ttl)
+else
+    local value = redis.call('get', key)
+    if value == result then
+        --如果跟之前的锁一样，则重新设置时间
+        result = 1
+        redis.call('PEXPIRE', key, ttl)
+    end
+end
+--成功则返回1
+return result
+```
+
+解锁的关键是，查询锁的钥匙密码，如果和程序的钥匙相同才可以删除
+
+```lua
+--当锁匹配的钥匙相同时才可以删除锁
+local key = KEYS[1]
+local required = KEYS[2]
+local value = redis.call('GET', key)
+if value == required then
+    redis.call('DEL', key);
+    return 1;
+end
+return 0;
+```
 
 ## 持久化
 
@@ -332,6 +447,21 @@ EVAL的第二个参数是`key`的个数，后面的参数（从第三个参数�
     - 对于相同的数据集来说`AOF`文件的体积通常要大于`RDB`文件的体积。
     - 根据所使用的`fsync`策略，AOF 的速度可能会慢于`RDB`。 在一般情况下， 每秒`fsync`的性能依然非常高， 而关闭`fsync`可以让`AOF`的速度和`RDB`一样快， 即使在高负荷之下也是如此。 不过在处理巨大的写入载入时，RDB 可以提供更有保证的最大延迟时间（latency）。
 
+```lua
+- SET iscod hello EX 10
+//SET命令的AOF格式
+*5 //表示接收了五个参数
+$3
+SET
+$5
+iscod
+$5
+hello
+$4
+PXAT
+$13
+1687334133386
+```
 
 ### AOF的fsync策略
 
@@ -370,6 +500,7 @@ Redis 集群有16384个哈希槽, 每个key通过CRC16校验后对16384取模来
 * 节点 C 包含11001 到 16384号哈希槽.
 
 * 参考
+    * [如何发现和处理大Key、热Key](https://support.huaweicloud.com/bestpractice-dcs/dcs-bp-0220411.html)
     * [Redis集群](http://www.Redis.cn/topics/cluster-tutorial)
     * [Redis设计与实现](https://www.bookstack.cn/read/Redisbook/2d294542c86f1acf.md)
 
