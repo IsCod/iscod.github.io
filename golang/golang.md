@@ -306,8 +306,7 @@ func main() {
 
 `atomic`与`sync.Mutex`都可以实现并发模型下的数据安全，但是他们的应用场景偏向不同。
 
-	`atomic`跟多偏向于变量或者资源的更新保护
-	`sync.Mutex`更多是保护一段逻辑处理，保证逻辑处理的唯一性。`sync.Mutex`底层也是通过`atomic`实现
+? `atomic`跟多偏向于变量或者资源的更新保护。`sync.Mutex`偏向于是保护一段逻辑处理，保证逻辑处理的唯一性。`sync.Mutex`底层也是通过`atomic`实现
 
 
 ```go
