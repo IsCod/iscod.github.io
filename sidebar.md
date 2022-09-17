@@ -17,6 +17,7 @@
     * [CSP通讯](golang/csp.md)
     * [GMP](golang/gmp.md)
     * [杂谈](golang/golang.md)
+    * [并发不是并行](TO/concurrency-is-not-parallelism.md)
     <!-- * [调度器](golang/goroutine.md) -->
 * Devops
     * [Jenkins](devops/jenkins.md)
@@ -40,6 +41,7 @@
 * 杂项 
   * [AJAX](TO/AJAX.md)
   * [错误处理](TO/错误处理.md)
+  * [并发不是并行](TO/concurrency-is-not-parallelism.md)
 * 经济学
   * [经济学十大原理](EO/经济学十大原理.md)
   * [现值](EO/现值.md)
