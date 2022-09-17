@@ -248,7 +248,6 @@ func main() {
 	}()
 	wg.Wait()
 }
-
 ```
 
 
@@ -295,6 +294,68 @@ func main() {
 	wg.Wait()
 }
 ```
+
+## atomic & sync.Mutex
+
+`atomic`提供了三种常用接口
+
+1. `Add` 原子地将*delta*添加到*addr*并返回新值。
+1. `CSA` 对值执行比较和交换操作。如果值与比较值相同则交换为设定的新值
+1. `Store` 原子地将*val*存储到*addr*中，一般配合`atomic.Value`结构使用
+
+
+`atomic`与`sync.Mutex`都可以实现并发模型下的数据安全，但是他们的应用场景偏向不同。
+
+	`atomic`跟多偏向于变量或者资源的更新保护
+	`sync.Mutex`更多是保护一段逻辑处理，保证逻辑处理的唯一性。`sync.Mutex`底层也是通过`atomic`实现
+
+
+```go
+package main
+
+import (
+	"fmt"
+	"sync"
+	"sync/atomic"
+)
+
+func SumMu() {
+	var count int
+	wg := sync.WaitGroup{}
+	mu := sync.Mutex{}
+	for i := 0; i < 1000; i++ {
+		wg.Add(1)
+		go func() {
+			mu.Lock()
+			count += 1
+			wg.Done()
+			mu.Unlock()
+		}()
+	}
+	wg.Wait()
+	fmt.Println(count)
+}
+
+func SumAtomic() {
+	var count int32
+	wg := sync.WaitGroup{}
+	for i := 0; i < 1000; i++ {
+		wg.Add(1)
+		go func() {
+			atomic.AddInt32(&count, 1)
+			wg.Done()
+		}()
+	}
+	wg.Wait()
+	fmt.Println(count)
+}
+
+func main() {
+	SumMu()
+	SumAtomic()
+}
+```
+
 
 ## 内存回收
 
