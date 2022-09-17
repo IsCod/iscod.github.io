@@ -4,18 +4,19 @@
 
 ![并发&并行](https://iscod.github.io/images/cp1.png)
 
-## goroutines
+> 并发是同时处理很多事情（事件是交叉处理的）。并行是同时做很多事情（事情是并行处理的）
+
+### goroutines
 
 goroutines是并发执行的关键
 
-## channels
+### channels
 
 channels实现同步与消息的传递
 
-## select 
+### select 
 
 多路并发控制
-
 
 ## 并行
 
