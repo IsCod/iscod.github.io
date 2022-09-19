@@ -11,7 +11,7 @@
 
 在函数中传参，如果是值类型传递，修改被传递的参数，函数内修改不会影响原有变量. 如果是引用类型传递，函数内修改参数会影响原值
 
-> 引用类型初始化时，都可赋值为`nil`, 而值类型不能初始化为`nil`
+> 引用类型初始化时，都可赋值为`nil`, 而值类型不能初始化为`nil`。引用类型结构的数据都是通过`unsafe.Pointer`指针来指向底层数据，因此可以赋值为`nil`
 
 ```go
 func change(slice []int) {
@@ -164,6 +164,42 @@ func main() {
 # go run main.go
 0 1 zz zz zz 5 6
 ```
+
+##  更好的 begin time
+
+在业务需求中经常有需要获取当天的凌晨时间，或者根据一个时间计算出该时间的凌晨时间点。
+
+一般程序想到的是通过`time.ParseInLocation`结合`time.Now().Format`来使用，这种方式简单容易理解
+
+```go
+func GetTodayBegin() int64 {
+	timeStr := time.Now().Format("2006-01-02")
+	t, _ := time.ParseInLocation("2006-01-02 15:04:05", timeStr+" 00:00:00", time.Local)
+	return t.Unix()
+}
+```
+
+而好的程序可能会思考，`time`需要进行两次`string`类型转换才能得到结果，这中间可能会有巨大的性能优化空间，如果不进行类型转换，性能是否会更好？
+
+```go
+func GetTodayBeginModify() int64 {
+	t := time.Now()
+	_, offset := t.Local().Zone()
+	return t.Unix() - int64(offset) - t.Unix()%86400
+}
+```
+
+
+基准测试结果:
+```sh
+goos: darwin
+goarch: amd64
+BenchmarkGetDayBegin-8          15347680               390.8 ns/op
+BenchmarkGetDayBeginModify-8    51300466               118.8 ns/op
+```
+
+可以看到减少两次类型的转换，就换来成倍的性能提升，如此还是值得进行一次优化
+
 
 ## unsafe.Pointer
 
