@@ -282,6 +282,19 @@ EVAL的第二个参数是`key`的个数，后面的参数（从第三个参数�
 
 > Redis cluster 环境下使用要保证所有的`key`在同一个`slot`, 否则会报`ERR 'EVAL' command keys must in same slot`
 
+
+#### Lua table编码存储
+
+`cjson`和`cmsgpack`都可以实现`lua table`编码后存储到redis内。`cmsgpack`比`json`占用存储更小，且编码更快。但是相比`json`的可读行更新
+
+```bash
+127.0.0.1:6379> EVAL "local user={};user[1]={};user[1][100]='hjhj'; return redis.pcall('SET', 'user', cmsgpack.pack(user))" 0
+127.0.0.1:6379> get user
+"\x91\x81d\xa4hjhj"
+```
+
+> 使用数字键解码 JSON 对象后必须小心。每个数字键都将存储为 Lua字符串。任何假设类型编号的后续代码都可能会中断。
+
 ## 持久化
 
 `Redis`提供多种类型的持久化方式：
