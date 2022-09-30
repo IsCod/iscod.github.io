@@ -277,7 +277,7 @@ EVAL的第二个参数是`key`的个数，后面的参数（从第三个参数�
 举例说明：
 
 ```bash
-127.0.0.1:6379[1]> eval "local res={} for i,v in ipairs(ARGV) do res[i]=Redis.call('ZSCORE', KEYS[1], v); end return res" 1 key member1 member2 member3
+127.0.0.1:6379[1]> eval "local res={} for i,v in ipairs(ARGV) do res[i]=redis.call('ZSCORE', KEYS[1], v); end return res" 1 key member1 member2 member3
 ```
 
 > Redis cluster 环境下使用要保证所有的`key`在同一个`slot`, 否则会报`ERR 'EVAL' command keys must in same slot`
