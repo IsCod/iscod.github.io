@@ -285,7 +285,7 @@ EVAL的第二个参数是`key`的个数，后面的参数（从第三个参数�
 
 #### Lua table编码存储
 
-`cjson`和`cmsgpack`都可以实现`lua table`编码后存储到redis内。`cmsgpack`比`json`占用存储更小，且编码更快。但是相比`json`的可读行更新
+`cjson`和`cmsgpack`都可以实现`lua table`编码后存储到redis内。`cmsgpack`比`json`占用存储更小，且编码更快。但是相比`json`的可读行更差
 
 ```bash
 127.0.0.1:6379> EVAL "local user={};user[1]={};user[1][100]='hjhj'; return redis.pcall('SET', 'user', cmsgpack.pack(user))" 0
