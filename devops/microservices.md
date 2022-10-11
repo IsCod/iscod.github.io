@@ -4,7 +4,7 @@
 
 ### 1. 从单体开始
 
-微服务的第一个最佳实践是：你可能不需要这些服务。如果您的应用程序没有任何用户，那么在构建 MVP 时，业务需求可能会迅速发生变化。
+微服务的第一个最佳实践是：*你可能不需要这些服务*。如果您的应用程序没有任何用户，那么在构建 MVP 时，业务需求可能会迅速发生变化。
 微服务会使开销和管理复杂性指数级别增长。因此，对于新项目而言，将所有代码和逻辑保存在一个代码库中开销会要小很多。因为这样可以更轻松的移动应用中的不同模块。
 
 如果对系统所需的不同服务有深入了解，微服务就能很好的发挥作用。但是如果没有明确定义应用的核心需求，微服务则很难发挥作用。
@@ -42,6 +42,3 @@
     * [building-microservices](https://www.atlassian.com/zh/microservices/microservices-architecture/building-microservices)
     * [Martin Fowler Microservices](https://martinfowler.com/articles/microservices.html#CharacteristicsOfAMicroserviceArchitecture)
     * [微服务定义](https://www.bookstack.cn/read/learning-microservice/definition-Martin-Fowler-microservices.md)
-
-
-
