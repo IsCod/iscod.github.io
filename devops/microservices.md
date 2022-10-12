@@ -1,5 +1,7 @@
 # 如何构建微服务
 
+### 微服务和 SOA
+
 > 微服务的指导原则是：通过将业务组件拆分为可相互独立部署和运行的小型服务来构建应用。服务之间的关注点分离定义为”服务边界“
 
 ### 1. 从单体开始
@@ -22,10 +24,14 @@
 
 但最重要且容易忽视的一点是，您需要重构团队的组织方式。
 
-`康威定律`是真实存在，并且使用所有类型的团队。如果一个软件团队由一个后端团队、一个前端团队、一个运营团队组成，这个软件团队奖提供独立的前端和后端单体，而这些单体被扔给运营团队随后投入生产（大部分组织结构都是这样）。此类团队结构并不适合微服务，因为每项服务都应被视为一个自己的产品，需要独立于其他服务进行交付。
+`康威定律`是真实存在，并且适用所有类型的团队。如果您的软件团队由一个后端团队、一个前端团队、一个运营团队组成，这个软件团队将提供独立的前端和后端单体，而这些单体被扔给运营团队随后投入生产（大部分组织结构都是这样）。此类团队结构并不适合微服务，因为每项服务都应被视为一个自己的产品，需要独立于其他服务进行交付。
 
 相反，您应该创建规模较小的 DevOps 团队，这些团队具备所有开发和维护的能力以满足他们所负责的服务。
+一个灵感来自于 Amazon 的 ”you build, you run it“ 概念，开发团队应该对生产中的软件承担全部责任。
 以此方式组织您的团队大有益处。首先，开发人员可以更好的理解他们的代码在生产环境中所产生的影响，这有助于他们开发出更好的版本，并降低客户发现问题的风险。其次，部署成为每个团队的第二天性，因为他们会共同改进代码，并实现部署管道的自动化。
+
+> 微服务团队有多大？亚马逊有一个两个披萨团队的概念（即整个团队可以吃两个披萨）这意味着不超过十二个人。
+
 
 ### 3. 拆分单体式结构，构建微服务架构
 
@@ -46,5 +52,5 @@
 
 * 参考
     * [building-microservices](https://www.atlassian.com/zh/microservices/microservices-architecture/building-microservices)
-    * [Martin Fowler Microservices](https://martinfowler.com/articles/microservices.html#CharacteristicsOfAMicroserviceArchitecture)
+    * [Martin Fowler Microservices](https://martinfowler.com/articles/microservices.html)
     * [微服务定义](https://www.bookstack.cn/read/learning-microservice/definition-Martin-Fowler-microservices.md)
