@@ -1,4 +1,6 @@
-* [DDD](ddd/ddd.md)
+* 专业劝退
+  [CNCF](https://landscape.cncf.io)
+  [DDD](ddd/ddd.md)
 
 * 数据结构及算法
   * [链表](data_struct/list.md)
