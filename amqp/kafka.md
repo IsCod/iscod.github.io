@@ -16,14 +16,35 @@ kafka有以下优点：多生产者多消费，基于磁盘的数据存储，高
 1. 主题
 1. 生产者&消费者、偏移量、消费者群组
 
+## 副本
+
+`kafka`副本主要用于提高数据可靠性。
+`kafka`默认生成1个副本，一般生产环境设置2-3个副本，过多的副本会增加磁盘存储空间和网络数据传输降低效率
+
+`kafka`中副本分为`Leader`和`Follower`。生产者只会发送数据到`Leader`。`Follower`会自动从`Leader`中同步
+
+AR=Isr+Osr
+
+`Isr`: 表示和`Leader`同步的`Follower`集合
+
+Osr: 表示`Follower`和`Leader`同步时，延迟过多（超时）的副本
+
+#### 副本选举策略
+
+根据ISR中存活的，且在Osr中排序较前的做为`Leader`
+
+```bash
+kafka-topics --create --topic test --replication-factor 2 --partitions 4 --bootstrap-server 127.0.0.1:9092 # 创建了四个分区，两个副本的topic
+```
+
 ### Partition
 
 #### 分区分配策略
 
     * range
 
-    首先对Topic里面的分区按照序号排序，并对消费者按照字母排序，通过`partition`数量/`consumer`数量决定每个消费者应该消费几个分区，余数由前面的几个分区消费。
-    当topic数量较多时容易产生数据倾斜，使用时应注意。
+    首先对Topic里面的分区按照序号排序，并对消费者按照字母排序，通过 `partition`数量/`consumer`数量 决定每个消费者应该消费几个分区，余数由前面的几个分区消费。
+    当Topic数量较多时容易产生数据倾斜，应注意。
 
     * cooperative-sticky
 
@@ -42,9 +63,7 @@ kafka有以下优点：多生产者多消费，基于磁盘的数据存储，高
 ```go
 # 生产者配置
 configMap.SetKey("auto.offset.reset", "latest") //latest最新的,largest：最新的
-
 ```
-
 
 ### 消费者
 
@@ -69,30 +88,22 @@ configMap.SetKey("auto.commit.interval.ms", 5000) //自动提交offset的时间�
 configMap.SetKey("enable.auto.commit", false)     //首先关闭自动提交
 ```
 
-```go
-
-```
-
 #### 指定`offset`消费
-
-```go
-
-```
 
 #### 重复消费&漏消费
 
 * 重复消费
 
-采用自动提交`offset`时，默认策略是5s提交一次，而在下次未提交时，`consumer`拉去数据处理后因为异常退出而未进行`commit`。
-那么`consumer`重启后，则从上次提交的`offset`处继续消费，造成重复消费。因此要做幂等性
+采用自动提交`offset`时，默认策略是每5s进行一次提交。而在下次未提交之前, `consumer`拉取了数据就进行处理, 却因为异常退出, 而未进行`commit`。
+那么`consumer`重启后，则从上次提交的`offset`处继续消费，造成重复消费。因此数据的处理要做幂等性。
 
 * 漏消费
 
-设置`offset`手动提交时，数据还在内存中，此时消费者线程kill掉，那么offset已提交，但是数据未处理，导致这部分内存中数据丢失
+设置`offset`手动提交时，数据拉取后程序内存中，未处理完毕，此时消费者线程kill掉，那么offset采用的异步提交已完成。那么就导致这部分内存中数据未处理而丢失
 
 如何避免漏消费？
 
-`kafka`消费端将消费过程和提交`offset`过程做原子绑定，此时我们可将`kafka`的offset保存到支持事务的自定义介质中（如mysql）
+`kafka`消费端将消费过程和提交`offset`过程做原子绑定（事务），此时将`kafka`的offset保存到支持事务的自定义介质中（如mysql）进行处理。这样就避免业务未处理完毕而进行了commit
 
 
 #### 数据积压
@@ -101,15 +112,15 @@ configMap.SetKey("enable.auto.commit", false)     //首先关闭自动提交
 
     如果是消费能力不足, 可通过增加topic的分区数, 并同时提高消费者数量, 消费者数=分区数, 从而增加消费能力
 
-1. 下游数据处理不足（拉去速度/处理时间 < 生产速度）
+1. 下游数据处理不足（拉取速度/处理时间 < 生产速度）
 
-    如果是下游数据处理不足, 则可提高每批次的拉去数量。并配合每次拉取最大字节数。提高数据拉取熟读
+    如果是下游数据处理不足, 则可提高每批次的拉取数量。并配合每次拉取最大字节数。提高数据拉取熟读
 
 如何增加吞吐量？
 
 ```go
 //partition设置
-configMap.SetKey("batch.size", 1000000) //数据达到多大容量时发送
+configMap.SetKey("batch.size", 1000000) //数据达到多大容量时发送，可提高至32kb
 configMap.SetKey("linger.ms", 5) //每批次等待时间，超过5ms也发送一次
 
 //consumer设置，先提高poll条数
