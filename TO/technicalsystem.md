@@ -24,11 +24,41 @@
 gin是一个以性能著称的web框架，gin 具有快速、支持中间件、JSON验证、路由组、错误管理、内置渲染等特性。
 同时gin采用RESTful api设计风格，并能轻松实现实现api版本管理。
 
+
+
+
 ```go
+// 快速构建gin http服务
+// https://github.com/iscod/iscod.github.io/tree/master/example/gin
 package main
 
+import (
+    "fmt"
+    "github.com/gin-gonic/gin"
+    "net"
+    "net/http"
+)
+
 func main() {
+    c, err := net.Listen("tcp", "localhost:8080")
+    if err != nil {
+        fmt.Printf("Error creating %s", err)
+        return
+    }
+    g := gin.New()
+    g.Handle("GET", "/", func(context *gin.Context) {
+        context.String(http.StatusOK, "ok")
+    })
+    g.POST("/post", func(context *gin.Context) {
+        context.JSON(http.StatusOK, gin.H{"message": "ok"})
+    })
+
+    //g.Use(gin.Logger(), gin.Recovery()) //添加logger和Recovery中间件
+    if err = g.RunListener(c); err != nil {
+        fmt.Printf("Error creating %s", err)
+    }
 }
+
 ```
 
 #### 5. 命令行Cli组件 [Cobra](https://github.com/spf13/cobra/blob/main/site/content/user_guide.md)
