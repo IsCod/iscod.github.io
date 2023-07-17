@@ -30,17 +30,17 @@ func getLockWithTimeout(rdb *redis.Client, lockName string, lockTime time.Durati
 
 	timer := time.NewTimer(outTime)
 	identifier := fmt.Sprintf("%d%d", time.Now().Unix(), rand.Intn(1000))
-	exp := fmt.Sprintf("%d", int(lockTime.Seconds()))
+	ttl := fmt.Sprintf("%d", int(lockTime.Seconds()))
 	script := `
 local key = KEYS[1]
 local required = KEYS[2]
-local exp = KEYS[3]
+local ttl = KEYS[3]
 
 local result = redis.call('SETNX', key, required)
 
 if result == 1 then
     --设置成功，则设置过期时间
-   redis.call('EXPIRE', key, exp)
+   redis.call('EXPIRE', key, ttl)
 else
     local value = redis.call('get', key)
     if value == result then
@@ -58,7 +58,7 @@ return result
 			identifier = ""
 			return identifier
 		default:
-			if r, err := rdb.Eval(context.Background(), script, []string{lockKey, identifier, exp}).Int(); err == nil && r == 1 {
+			if r, err := rdb.Eval(context.Background(), script, []string{lockKey, identifier, ttl}).Int(); err == nil && r == 1 {
 				return identifier
 			} else {
 				//fmt.Println(err, r)
