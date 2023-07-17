@@ -181,6 +181,7 @@ Redis类型实现的分布式锁，有几大优势：
 1. 对于分布式应用加锁，能够避免出现库存超卖及无序列访问现象
 
 ```lua
+-- https://github.com/iscod/iscod.github.io/tree/master/example/redis
 local key = KEYS[1]
 local required = KEYS[2]
 local ttl = tonumber(KEYS[3])
