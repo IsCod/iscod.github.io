@@ -19,7 +19,17 @@
 
 #### 3. 网关grpc-gateway
 
-#### 4. web组件gin
+#### 4. web组件[gin](https://gin-gonic.com/zh-cn/docs/introduction/)
+
+gin是一个以性能著称的web框架，gin 具有快速、支持中间件、JSON验证、路由组、错误管理、内置渲染等特性。
+同时gin采用RESTful api设计风格，并能轻松实现实现api版本管理。
+
+```go
+package main
+
+func main() {
+}
+```
 
 #### 5. 命令行Cli组件 [Cobra](https://github.com/spf13/cobra/blob/main/site/content/user_guide.md)
 
