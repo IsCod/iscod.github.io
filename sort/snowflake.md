@@ -26,7 +26,9 @@
 1. 时钟回拨时间很长，例如 > 5s，可以采用容器探针进行pod的重启更新
 
 ```go
-package sonwflake
+// 构建雪花算法package
+// https://github.com/iscod/iscod.github.io/tree/master/example/snowflake
+package snowflake
 
 import (
     "github.com/pkg/errors"
