@@ -5,7 +5,7 @@ pipeline {
     stages {
         stage('pull coding') {
             steps {
-            	checkout scmGit(branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/iscod/iscod.github.io.git']])
+            	checkout scmGit(branches: [[name: '${tag}']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/iscod/iscod.github.io.git']])
                 echo 'pull coding success'
             }
         }
