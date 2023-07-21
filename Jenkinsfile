@@ -2,6 +2,8 @@
 pipeline {
     agent any
 
+    tools { go '1.19' }
+
     stages {
         stage('pull coding') {
             steps {
@@ -9,12 +11,13 @@ pipeline {
                 echo 'pull coding success'
             }
         }
-        stage('go build') {
-            steps {
-                echo 'Hello World'
-            }
+        stage('Build') {
+          steps {
+            // Output will be something like "go version go1.19 darwin/arm64"
+            sh 'go version'
+          }
         }
-        stage('docker build') {
+        stage('DockerBuild') {
             steps {
                 echo 'docker build image success'
             }
