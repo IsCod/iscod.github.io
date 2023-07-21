@@ -1,5 +1,11 @@
 # Jenkins
 
+### 快速部署jenkins
+
+```bash
+docker run -d -v /var/jenkins_home:/var/jenkins_home -p 8080:8080 --restart=on-failure --name=jenkins jenkins/jenkins:jdk11
+```
+
 ## 流水线(pipeline)
 
 Jenkins 流水线 (或简单的带有大写"P"的"Pipeline") 是一套插件，它支持实现和集成 continuous delivery pipelines 到Jenkins。
