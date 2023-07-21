@@ -92,30 +92,22 @@ return 1;
 }
 
 func main() {
-
-	var max = 10
-
 	rdb := getRdb()
-
 	runtime.GOMAXPROCS(runtime.NumCPU())
-	rdb.Set(context.Background(), "sellNum", 0, 0)
+	rdb.Set(context.Background(), "sellNum", 10, 0) //设置库存，可以设置在mysql
 	for i := 0; i < 5000; i++ {
 		userName := 1000 + i
 		go func() {
 			identifier := getLockWithTimeout(rdb, "Huawei Mate 10", 1*time.Second, time.Second*20)
-
 			if identifier != "" {
-				if n, err := rdb.Get(context.Background(), "sellNum").Int(); n < max && err == nil {
-					rdb.Incr(context.Background(), "sellNum")
-					fmt.Printf("正在为用户：%d 处理订单 购买第 %d 台 剩余 %d 台\n", userName, n, max)
-				} else {
-					//fmt.Printf("%s %d %d\n", err, n, max)
-					//fmt.Printf("用户：%d 无法购买，已售罄！\n", userName)
+				if n, err := rdb.Get(context.Background(), "sellNum").Int(); n > 0 && err == nil {
+					rdb.IncrBy(context.Background(), "sellNum", -1)
+					fmt.Printf("正在为用户：%d 处理订单 购买第 %d 台\n", userName, n)
 				}
-				//fmt.Printf("identifier: %s", identifier)
 				releaseLock(rdb, "Huawei Mate 10", identifier)
 			} else {
-				//fmt.Printf("===")
+				//fmt.Printf("%s %d %d\n", err, n, max)
+				//fmt.Printf("用户：%d 无法购买，已售罄！\n", userName)
 			}
 		}()
 	}
@@ -128,6 +120,6 @@ func main() {
 	time.Sleep(20 * time.Second)
 
 	sellnum := rdb.Get(context.Background(), "sellNum").String()
-	fmt.Printf("库存 %d 台， 共卖出 %s 台\n", max, sellnum)
+	fmt.Printf("库存 %d 台， 共卖出 %s 台\n", 10, sellnum)
 	time.Sleep(1 * time.Second)
 }

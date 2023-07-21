@@ -2,12 +2,21 @@
 
 ## kafka特点
 
-1. 支持单分区级别消息顺序性
-1. 持久化
-1. 事务消息
-1. 支持广播消息
+1. 消息持久化
+1. 高吞吐量
+1. 扩展性强（可以动态扩展）
+1. 多客户端支持
+1. Kafka stream（流处理）
+1. 安全机制
+1. 数据备份
+1. 轻量级
+1. 支持消息压缩（支持自定义压缩）
 
 > 不支持延迟队列、优先级队列、消息重试
+
+## kafka适用场景
+
+日志收集、消息系统、流式处理。不适合限时订单
 
 kafka有以下优点：多生产者多消费，基于磁盘的数据存储，高伸缩性，高性能
 
@@ -58,18 +67,46 @@ kafka-topics --create --topic test --replication-factor 2 --partitions 4 --boots
 
 > 每一个分区只能有一个消费者消费，当消费者组内的消费者数量大于分区数时，多出的消费者必然不会工作
 
-### 生产者
+### kafka配置
 
+#### 系统配置文件
+
+* broker.id
+
+在集群下的唯一id,要求是整数。如果服务器ip发生变化，而broker.id没有变化，则不影响consumers消费情况
+
+* listeners
+
+监听列表，逗号分割，如果hostname为`0.0.0.0`则绑定所有的网卡地址，如果为空，则绑定默认网卡
+
+* zookeeper.connect
+
+zookeeper集群地址，多个采用逗号分隔
+
+* auto.create.topics.enable=true
+
+是否运行自动创建主题，如果设置为true, 那么product,consumer,fetach一个不存在的主题时，会自动创建。一般处于安全考虑会设置为false
+
+* log.dirs
+
+kafka消息数据存放的目录，可以设置多个，采用逗号分割，如果设置多个，kafka会根据`最少使用`原则，把同一分区的日志片段保存到同一路径下，会往拥有最少分区的路径新增分区
+
+1. 主题配置
+
+* num.partitions
+
+新建主题的分区个数。该参数根据消费者处理能力和数量进行确定，分区数应大于消费者数量（1，便于后面扩充消费者数量，2，每一个分区至少一个消费者，分区数大于消费者数量时，消费者会平分分区[分区策略]([https://iscod.github.io/#/amqp/kafka?id=partition]))
+
+* message.max.bytes
+
+消息最大字节数，生产者消费者应该设置一致。该值一般与`fetch.message.max.bytes`配合设置。
+
+#### 生产者配置
 ```go
-# 生产者配置
-configMap.SetKey("auto.offset.reset", "latest") //latest最新的,largest：最新的
+configMap.SetKey("request.timeout.ms", "30000") //生产者请求的确认超时时间
 ```
 
-### 消费者
-
-#### 自动提交`offset`
-
-`kafka`的策略默认是自动提交`offset`, 这样设置的可以帮助使用者只专注于自身的业务，而无需做过多的配置
+#### 消费者配置
 
 ```go
 configMap.SetKey("enable.auto.commit", true)     //是否自动提交offset，默认true

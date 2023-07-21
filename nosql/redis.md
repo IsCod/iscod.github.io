@@ -271,9 +271,17 @@ OK
 1. Key的value比较大，例如一个`string`类型的Key大小超过10MB，或者一个集合类型（Hash,List,Set等）元素总大小超过100MB。一般单个`string`类型的key大小超过10MB，集合类型的key总大小超过50MB，则定义为大Key。
 1. Key的元素比较多，例如一个Hash类型的Key，其元素数量超过10000，一般定义集合类型的key元素超过5000个，则认为其为大Key
 
+*大Key的危害
+
+1. 集群内存空间分布不均匀
+1. 超时阻塞，由于redis的单线程的特性,操作bigkey时比较耗时，也就意味着阻塞Redis的可能性加大
+1. 网络拥塞，每次获取bigkey产生的网络流量加大
+
 *热Key*
 
 `热Key`通常以一个`key`被操作的频率和占用的资源判断例如：
+
+一般通过判断访问频次区分热数据和冷数据
 
 * 某一个集群实例一个分片每秒处理10000次请求，其中有3000次都是操作同一个`Key`
 * 某一个集群实例一个分片的总宽带使用（入带宽+出带宽）为100Mbits/s，其中80Mbits/s都是对某个Hash类型的key执行GETALL所占用
@@ -322,6 +330,67 @@ OK
 
     热Key极其容易造成缓存击穿，高峰期请求都直接透传到后端数据库上，从而导致业务雪崩。因此热Key的优化一定需要设计系统的熔断/降级机制，在发生击穿的场景下进行限流和服务降级，保护系统的可用性
 
+## 事务
+
+Redis提供了简单的事务功能，将一组要执行的命令放到`MULTI`和`EXEC`之间。
+`MULTI`表示事务开始，`EXEC`开始执行事务命令。`DISCARD`是回滚(取消事务)
+
+> Redis的事务功能很弱，在事务回滚机制上，Redis只对基本的语法错误进行判断
+
+* 语法错误
+
+```bash
+127.0.0.1:6380> set mkey 111
+OK
+127.0.0.1:6380> MULTI
+OK
+127.0.0.1:6380(TX)> set mkey 222
+QUEUED
+127.0.0.1:6380(TX)> sett mkey 333
+(error) ERR unknown command 'sett', with args beginning with: 'mkey' '333'
+127.0.0.1:6380(TX)> exec
+(error) EXECABORT Transaction discarded because of previous errors.
+127.0.0.1:6380> get mkey
+"111"
+```
+由于语法错误，整个事务都未执行
+
+* 执行错误
+
+```bash
+127.0.0.1:6380> set mkey 111
+OK
+127.0.0.1:6380> MULTI
+OK
+127.0.0.1:6380(TX)> set mkey 222
+QUEUED
+127.0.0.1:6380(TX)> SADD mkey 333
+QUEUED
+127.0.0.1:6380(TX)> exec
+1) OK
+2) (error) WRONGTYPE Operation against a key holding the wrong kind of value
+127.0.0.1:6380> get mkey
+"222"
+```
+
+对于执行错误，redis并不能正确回滚，执行错误前的命令都会执行，开发时要特别注意
+
+```
+# 既有语法错误，又有执行错误时，事务不会执行提交
+27.0.0.1:6380> MULTI
+OK
+127.0.0.1:6380(TX)> set mkey 222
+QUEUED
+127.0.0.1:6380(TX)> SADD mkey 333
+QUEUED
+127.0.0.1:6380(TX)> sett mkey 444
+(error) ERR unknown command 'sett', with args beginning with: 'mkey' '444'
+127.0.0.1:6380(TX)> exec
+(error) EXECABORT Transaction discarded because of previous errors.
+127.0.0.1:6380> get mkey
+"111"
+```
+
 ## Lua脚本
 
 Redis 通过`EVAL`命令来执行`lua`脚本, 使用`lua`脚本可以很方便的获取`Redis`多个命令的结果，比如`ZSCORE`获取多个`member`的结果时。
@@ -340,6 +409,11 @@ EVAL的第二个参数是`key`的个数，后面的参数（从第三个参数�
 127.0.0.1:6379[1]> eval "local res={} for i,v in ipairs(ARGV) do res[i]=redis.call('ZSCORE', KEYS[1], v); end return res" 1 key member1 member2 member3
 ```
 
+## Pipeline
+
+Pipeline实现批量命令执行
+
+
 > Redis cluster 环境下使用要保证所有的`key`在同一个`slot`, 否则会报`ERR 'EVAL' command keys must in same slot`
 
 
@@ -357,8 +431,12 @@ EVAL的第二个参数是`key`的个数，后面的参数（从第三个参数�
 
 > 使用数字键解码 JSON 对象后必须小心。每个数字键都将存储为 Lua字符串。任何假设类型编号的后续代码都可能会中断。
 
-
 ## lua实现分布式锁
+
+### 新版本的分布锁可以使用
+```
+127.0.0.1:6380> SET key value NX EX 10
+```
 
 lua 分布式锁的关键是在锁不存在的时候，才能去设置锁，并设置一个过期时间，防止其他程序长时间无法获取锁
 
@@ -484,6 +562,21 @@ Redis`AOF`的`fsync`策略有三种方式：
 
 ## 集群
 
+Redis集群方案
+
+### Redis Cluster
+
+Redis cluster是redis在3.0版本正式，有效解决了Redis分布式方面的需求。当遇到单机内存，并发，流量瓶颈时，可采用cluster方案达到负载均衡的目的
+
+#### Redis Cluster功能限制
+
+Redis集群相对于单机版本功能上有一些限制，在开发时应做好规避
+
+1. KEY批量操作支持有限, `MGET`,`MSET`,`DEL`批量操作时，key不能跨分槽
+1. KEY事务操作支持有限
+1. KEY作为数据分区的最小粒度，不能将一个大的键值对象（hash,list）映射到不同节点，可能出现数据不均衡
+1. 不支持多数据空间，单机redis可以支持16个数据库，集群模式下只能使用一个数据空间，即：`SELECT 0`
+
 Redis集群是由多个Redis节点组成的数据共享的程序集（最少三个节点）
 
 ### 数据分片
@@ -498,6 +591,53 @@ Redis 集群有16384个哈希槽, 每个key通过CRC16校验后对16384取模来
 * 节点 A 包含 0 到 5500号哈希槽.
 * 节点 B 包含5501 到 11000 号哈希槽.
 * 节点 C 包含11001 到 16384号哈希槽.
+
+### 节点增加后的`slot`再分配
+
+```bash
+redis-cli --cluster add-node 127.0.0.1:6383 127.0.0.1:6380 #增加新节点到集群 new_host:new_port existing_host:existing_port
+redis-cli --cluster reshard 127.0.0.1:6383 # 为新节点划分slot
+```
+
+
+### redis为什么快？
+
+1. 纯内存的数据访问
+1. 单线程避免上下文切换（io是多路复用，命令还是单线程）
+1. `渐进式Rehash`, 缓存时间戳
+
+* 渐进式`Rehash`
+
+渐进式`Rehash`是redis全局哈希表会在新增键值对时进行扩展，扩展后就面临数据移动问题。
+渐进式`Rehash`就是Redis提前准备了一个全局hash表，将需要移动的数据分摊到每次命令中去，减少一次性移动大量数据的阻塞。然后通过程序维护两个全局哈希表的数据。
+
+* 缓存时间戳
+
+单线程的redis缓存系统时间戳，通过定时任务每次去更新系统时间到内存中维护，这样就减少了系统时间调用。获取时间直接从缓存中直接拿，就相对减少了系统调用
+
+### redis合适的应用场景
+
+1. 缓存 string
+1. 计数器 string
+1. 分布式会话 string
+1. 排行榜 zset
+1. 分布式锁
+1. 最新列表
+1. 消息队列
+
+### redis有哪些常见性能问题和解决方案
+
+1. 持久化性能问题，持久化由从节点完成，主节点不持久化
+1. 主从复制通信流畅，设置在相同的机房，避免外网同步
+1. 主从复制，尽量采用线性结构，避免主机需要发送给多个从节点进行同步（网状结构），减轻主节点压力
+
+
+### 什么情况下可能造成redis阻塞
+
+1. redis客户端阻塞，命令 key*, hgetall 等获取大量元素的命令
+1. 删除大Key，例如删除100万元素的zset，阻塞2s
+1. 清空库，flushdb, flushall
+1. AOF日志同步写，记录AOF日志，同步写磁盘，1个同步写磁盘1-2ms
 
 * 参考
     * [如何发现和处理大Key、热Key](https://support.huaweicloud.com/bestpractice-dcs/dcs-bp-0220411.html)

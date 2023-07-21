@@ -46,6 +46,7 @@
   * [NoSQL是什么?](nosql/nosql.md)
   * [REDIS](nosql/redis.md)
   * [MongoDB](nosql/mongo.md)
+  * [缓存](nosql/memcached.md)
 * SQL
   * [MySQL](sql/mysql.md)
   * [数据分片](TO/数据分片.md)

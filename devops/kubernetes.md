@@ -43,7 +43,7 @@ spec:
         port: 80
       failureThreshold: 30 # 探针连续失败了 n 次 认为失败
       initialDelaySeconds: 15 # 容器启动后要等待多少秒后才启动启动、存活和就绪探针
-      periodSeconds: 20 # 指定 每隔 3 秒执行一次存活探测
+      periodSeconds: 3 # 指定 每隔 3 秒执行一次存活探测
     readinessProbe: # 定义一个就绪探针，http请求正确返回才可用
       tcpSocket:
         port: 80
@@ -67,8 +67,11 @@ spec:
 # 根据一个yaml文件创建一个 deployment 资源
 kubectl create deployment user-uservice-deployment -o user-uservice-deployment.yaml
 
-# apply更新一个 deployment 资源, 例如镜像tag发布更新
+# apply根据一个yaml文件更新一个 deployment 资源
 kubectl apply -f user-service-deployment.yaml
+
+# deployment 更新镜像，常与ci/cd结合更新程序
+kubectl set image deployment/deployment-name nginx=nginx:1.24
 
 # 查看 deployment 发布历史版本
 kubectl rollout history deployment user-service-deployment
@@ -181,7 +184,6 @@ spec:
 
 service类型：`ExternalName`, `LoadBalancer`, `NodePort`, `ClusterIP`, `ClusterIP-none`
 
-
 ### label & selector
 
 #### label
@@ -268,10 +270,10 @@ Secret 类似于 ConfigMap 但专门用于保存机密数据。
 
 ```
 # secret 提供直接创建 docker-registry 认证
- kubectl create secret docker-registry myregister --docker-server=DOCKER_REGISTRY_SERVER --docker-username=xxxx --docker-password=xxxx --docker-email=xxxx
+kubectl create secret docker-registry myregister --docker-server=DOCKER_REGISTRY_SERVER --docker-username=xxxx --docker-password=xxxx --docker-email=xxxx
 
 # 创建 nginx 的 tls 证书
- kubectl create secret tls NAME --cert=path/to/cert/file --key=path/to/key/file
+kubectl create secret tls NAME --cert=path/to/cert/file --key=path/to/key/file
 ```
 
 
@@ -283,7 +285,7 @@ Secret 类似于 ConfigMap 但专门用于保存机密数据。
 kubectl autoscale deployment user-service-deployment --min=3 --max=6
 
 # 查看当前自动调度列表
-get hpa -o wide
+kubectl get hpa -o wide
 ```
 
 ## ingress
@@ -424,6 +426,7 @@ kubectl apply -f .
 
 通过`kubectl get svc --namespace monitoring`可以查看生产的服务
 
+# prometheus生成的相关服务:
 
     # prometheus生成的相关服务：
     alertmanager-main       ClusterIP   10.108.145.122   <none>        9093/TCP,8080/TCP            19h
@@ -474,6 +477,3 @@ prometheus提供多种告警通知包括常用的：
 ## istio
 
 ### 服务网格
-
-
-

@@ -1,0 +1,55 @@
+//
+pipeline {
+    agent any
+
+    tools { 
+        'org.jenkinsci.plugins.docker.commons.tools.DockerTool' '20'
+    }
+
+    stages {
+        stage('Pull') {
+            steps {
+                checkout scmGit(branches: [[name: '${tag}']], extensions: [], userRemoteConfigs: [[credentialsId: '854e536a-2038-4cc2-a9f9-e9f29c3ecaf9', url: 'https://e.coding.net/ttf/user-server/user-server.git']])
+                echo 'pull coding success'
+            }
+        }
+        stage('Build') {
+          environment {
+            COMMITID="${sh(script:'git rev-parse --short HEAD', returnStdout: true).trim()}"
+          }
+          steps {
+             // docker.build('registry.cn-shanghai.aliyuncs.com/iscod/user-server').push(env.BUILD_NUMBER)
+             sh 'echo ${COMMITID}'
+            sh 'docker build -f Dockerfile --build-arg commit_id=${COMMITID} -t registry.cn-shanghai.aliyuncs.com/iscod/user-server:${BUILD_NUMBER} .'
+          }
+        }
+        stage('Test') {
+           environment {
+            COMMITID1="${sh(script:'git rev-parse --short HEAD', returnStdout: true).trim()}"
+            COMMITID2="${sh(script:'docker run --rm registry.cn-shanghai.aliyuncs.com/iscod/user-server:${BUILD_NUMBER} ./app -v', returnStdout: true).trim()}"
+          }
+          steps {
+            // Output will be something like "go version go1.19 darwin/arm64"
+            sh '''if [ ${COMMITID1} = ${COMMITID2} ]; then echo "Test success"; else exit 1; fi
+            '''
+          }
+        }
+        stage('Push') {
+          steps {        
+            // 该步骤通常不应该在您的脚本中使用。请参考帮助查看详情。
+            script {
+                docker.withRegistry('https://registry.cn-shanghai.aliyuncs.com/', 'id-docker-registry-aliyuncs') {
+                    // docker.build('registry.cn-shanghai.aliyuncs.com/iscod/user-server').push(env.BUILD_NUMBER)
+                    sh 'docker push registry.cn-shanghai.aliyuncs.com/iscod/user-server:${BUILD_NUMBER}'
+                }
+            }
+          }
+        }
+        stage('Deploy') {
+          steps {
+              sshPublisher(publishers: [sshPublisherDesc(configName: 'kubernetes', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: 'kubectl set image deployment/user-server user-server=registry.cn-shanghai.aliyuncs.com/iscod/user-server:${BUILD_NUMBER}', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: '', remoteDirectorySDF: false, removePrefix: '', sourceFiles: '')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
+		      echo 'sync success'
+          }
+        }
+    }
+}
