@@ -370,6 +370,33 @@ redis缓存的过期时间随机设置
 
 ## kafka
 
+
+### kafka名词解释
+
+1. Group: 若干个消费者组成一个分组，一个topic可以有多个分组。topic分组内，每一个分区只能有一个消费。如果需要实现广播，只要每个消费者有一个独立的分组即可实现
+1. Topic: 主题，队列
+1. Partition: 一个topic可以分为多个partition， 每个`partition`是顺序的，但是kafka只保证同一个partition的消息顺序，不保证一个topic的整体顺序。因此如果想要保证顺序只能设置一个partition
+1. OFFSET: 偏移量
+1. Zookeeper
+
+### kafka消息丢失场景及解决方案？
+
+#### 消息发送
+
+1. 设置ack=0，生产者发送消息，不确认消息是否发送成功，消费发生失败则消息丢失
+2. 设置ack=1，生产者发送消息，只确认leader节点发生成功。leader未同步到follwer节点时，leader故障则消失丢失
+3. unclean.leader.election.enable设置为true(默认false),允许选举ISR列表以外的副本为leader,
+
+解决方案：ack=all/-1/2/3等多个从节点 ,unclean.leader.election.enable=false
+
+#### 消费者
+
+先commit后处理消息。如果消息处理异常，但是offset已经提交，这条消息对于消费者来说已丢失了
+
+解决方案：先进行消息处理，后进行commit。同时做好业务处理的幂等性
+
+
+
 ### kafka有哪些特性/kafka为什么快？
 
 
@@ -497,11 +524,50 @@ mysql> show variables like "slow_query%";
 2 rows in set (0.02 sec)
 ```
 
+### mysql内存相关参数
+
+### Buffer pool
+
+一个大的日志缓存区允许大量的事务在提交之前不写入日志到磁盘。通过设置Buffer pool参数大小，可以大量减少磁盘的I/O次数。（一般建议在数据库服务器上，可以将缓冲池大小设置为服务器物理内存的60%~80%）
+
+```bash
+mysql> show variables like "%buffer_pool%"; #查看buffer pool大小
+mysql> set global innodb_buffer_pool_size = 3221225472; # 调整buffer pool大小
+```
+
+* 如何评估`innodb_buffer_pool_size`设置是否合理？
+
+通过分析InnoDB缓冲池的命中率来验证是否合理，一般命中率低于90%时，可考虑适当增加。
+
+`命中率=Innodb_buffer_pool_read_requests/(Innodb_buffer_pool_read_requests+Innodb_buffer_pool_reads)`
+
+```bash
+mysql> show status  like "%buffer_pool_read%";# 查询缓存命中与非命中次数
++---------------------------------------+-------------+
+| Variable_name                         | Value       |
++---------------------------------------+-------------+
+| Innodb_buffer_pool_read_requests      | 32786546234 |
+| Innodb_buffer_pool_reads              | 1096914     |
++---------------------------------------+-------------+
+```
+
 ### mysql的主键与唯一索引有哪些区别
 
 1. 一个表只能有一个主键，而唯一索引可以有多个
 1. 主键可以作为外键使用，而唯一索引不行
 1. 主键必定是唯一索引，而唯一索引不一定是主键
+
+### mysql慢查询优化？
+
+1. 优先选择优化高并发，因为高并发的SQL带来的问题后果更严重，且仅仅一点的优化整体的性能就会明显提升
+1. 明确优化目标（根据业务和当前数据库状态，以优化的结果给用户一个好的体验，而不一定是消耗的资源最少）
+1. explain分析sql语句
+1. 永远用小的结果集驱动大的结果集（小的数据集驱动大的结果集，减少内层表读取次数）
+1. 尽可能的在索引中完成排序
+1. 只使用最有效的过滤条件
+1. 只获取自己需要的列
+1. 尽量避免复杂的join和子查询
+1. 合理设计使用索引（唯一性太差的字段不适合创建索引，更新频繁的字段不适合创建索引，不会出现咋where字句中的不适合创建索引）
 
 ### Mysql为什么使用B+Tree?
 
