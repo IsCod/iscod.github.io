@@ -43,8 +43,31 @@ cKWTjpBP2dPwVZ4WWC+9aGVd+Gyn1o0CLelf4rEjGoXbAAEgAqeGUxrcIlbjXfbc
 mwIDAQAB
 -----END PUBLIC KEY-----`)
 	s, err := rsa.Encode([]byte("Hello world!"))
+	if err != nil {
+		fmt.Printf("RsaSign Error encoding %s", err)
+		return
+	}
 	fmt.Println(s, err)
 
 	out, err := rsa.Decode(s)
-	fmt.Printf("Decode : %s\n", out)
+	if err != nil {
+		fmt.Printf("rsa Error decodeing : %s\n", err)
+		return
+	}
+	fmt.Printf("rsa Decode : %s\n", out)
+
+	hs := sign.NewHsSign("abcdefg12345678")
+	s, err = hs.Encode([]byte("Hello world!"))
+	if err != nil {
+		fmt.Printf("HsSign Error encoding : %s\n", err)
+		return
+	}
+	fmt.Printf("Hs Encod : %s\n", s)
+	out, err = hs.Decode(s)
+	if err != nil {
+		fmt.Printf("Hs Error decodeing : %s\n", err)
+		return
+	}
+	fmt.Printf("Hs Decode : %s\n", out)
+
 }

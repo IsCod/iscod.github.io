@@ -10,17 +10,12 @@ type RsaSign struct {
 	privateKey string
 }
 
-type rsaData struct {
-	Data []byte
-	jwt.RegisteredClaims
-}
-
 func NewRsaSign(privateKey, publicKey string) RsaSign {
 	return RsaSign{publicKey: publicKey, privateKey: privateKey}
 }
 
 func (s *RsaSign) Encode(data []byte) (string, error) {
-	d := rsaData{Data: data, RegisteredClaims: jwt.RegisteredClaims{
+	d := signData{Data: data, RegisteredClaims: jwt.RegisteredClaims{
 		//Issuer:    "ADSF",
 		//Subject:   "63edecb5b654030011f12ea6",
 		ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour)),
@@ -37,7 +32,7 @@ func (s *RsaSign) Encode(data []byte) (string, error) {
 }
 
 func (s *RsaSign) Decode(sign string) ([]byte, error) {
-	out := rsaData{}
+	out := signData{}
 	_, err := jwt.ParseWithClaims(sign, &out, func(token *jwt.Token) (interface{}, error) {
 		return jwt.ParseRSAPublicKeyFromPEM([]byte(s.publicKey))
 	})

@@ -370,7 +370,6 @@ redis缓存的过期时间随机设置
 
 ## kafka
 
-
 ### kafka名词解释
 
 1. Group: 若干个消费者组成一个分组，一个topic可以有多个分组。topic分组内，每一个分区只能有一个消费。如果需要实现广播，只要每个消费者有一个独立的分组即可实现
@@ -469,6 +468,14 @@ zookeeper集群地址，多个采用逗号分隔
 * auto.commit.interval.ms
 
 使用者偏移量的提交频率
+
+## RocketMQ
+
+### RocketMQ 的持久化机制？
+
+### RocketMQ 怎么实现消息顺序？
+
+### RocketMQ 事务消息原理？
 
 ## mysql
 
