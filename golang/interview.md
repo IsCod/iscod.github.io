@@ -667,16 +667,16 @@ k8s是google开发的
 
 1. token机制（防止页面重复提交）
 
-数据提交前先想服务器申请token, token放到Redis，或内存中，并设置有效期。
-客户端拿到token,提交请求，后台校验token，同时删除token，生产新的token，以供下次访问提交
+数据提交前, 先向服务器申请token, token放到Redis，或内存中，并设置有效期。
+客户端拿到token, 提交请求，后台校验token, 同时删除token, 生产新的token返回客户端, 以供下次访问提交
 
 token的特点：需要申请，一次有效性，可以限流
 
-? Redis根据删除操作命令是否返回成功，验证token是否存在
+> Redis根据删除操作命令是否返回成功，验证token是否存在
 
 1. traceId(操作标识)
 
-根据用户的动作标识+设备ID+时间等 生产一个`traceId`, 用户提交后，后台判断`traceId`是否已处理，用来哦安短是否是重复提交
+根据用户的动作标识+设备ID+时间等 生产一个`traceId`, 用户提交后，后台判断`traceId`是否已处理，进而判断否是是重复提交
 
 * 参考
 * [mysql索引](https://cloud.tencent.com/developer/article/1785124)
