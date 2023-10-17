@@ -32,6 +32,20 @@ typedef struct list {
 } list;
 ```
 
+```go
+// go 官方包也实现了简单的链表结构, container/list
+type Element struct { //链表节点，节点是双端节点
+	next, prev *Element
+	list *List
+	Value any
+}
+
+type List struct { //链表节点
+	root Element // sentinel list element, only &root, root.prev, and root.next are used
+	len  int     // current list length excluding (this) sentinel element
+}
+```
+
 链表一般分为`单链表` `双链表` `循环链表`这些链表都是一个数据指向另外一个数据的结构只是链表节点的指向不同
 
 - `单链表`
@@ -44,10 +58,34 @@ typedef struct list {
 ## 代码实现
 
 ```go
+//使用golang官方包内实现的list
+package main
+
+import (
+	"container/list"
+	"fmt"
+)
+
+func main() {
+	l := list.New()
+	node1 := l.PushFront(10)
+	l.InsertBefore(11, node1)
+	l.InsertBefore(12, node1)
+	l.InsertAfter(13, node1)
+
+	for b := l.Front(); b != nil; b = b.Next() {
+		fmt.Println(b.Value)
+	}
+}
+```
+
+```go
+// 自己实现list结构
 package main
 
 import "fmt"
 
+// 可以看到与官方包中list.Element结构类似
 type linkNode struct {
 	Prev, Next *linkNode
 	Value      interface{}
