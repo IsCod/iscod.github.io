@@ -250,7 +250,7 @@ func main() {
 
 #### 7. Casbin
 
-(Casbin)[https://github.com/casbin/casbin]是一套角色权限模型
+[Casbin](https://github.com/casbin/casbin)是一套角色权限模型
 
 1. 基于ACL访问控制模块
 1. 基于RBAC模型的访问控制
@@ -315,7 +315,7 @@ func clientWatch(kvs map[string]string) {
 
 #### 5. kafka
 
-(kafka)[https://iscod.github.io/#/amqp/kafka]消息队列解决方案
+[kafka](https://iscod.github.io/#/amqp/kafka)消息队列解决方案
 
 #### 6. ElasticSearch
 
@@ -356,11 +356,11 @@ docker run --rm --volumes-from nginx2 -v /bak:/bak --name backup nginx tar xf  /
 
 #### 3. Harbor
 
-(Harbor)[https://goharbor.io/] 是云原生基金会（CNCF）毕业项目，是构建私有仓库的首选，包含权限管理、LDAP、日志审核等
+[Harbor](https://goharbor.io) 是云原生基金会（CNCF）毕业项目，是构建私有仓库的首选，包含权限管理、LDAP、日志审核等
 
 #### 3. kubernetes
 
-(kubernetes)[https://iscod.github.io/#/devops/kubernetes]
+[kubernetes](https://iscod.github.io/#/devops/kubernetes)
 
 #### 4. jenkins
 

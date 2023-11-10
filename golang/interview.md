@@ -6,7 +6,7 @@
 
 值类型传递: `array`, `struct` ,`int`, `float`, `bool`, `string`
 
-? 一个简单的判断就是引用类型可以初始化为`nil`
+> 一个简单的判断就是引用类型可以初始化为`nil`
 
 *make可以创建哪些*
 
