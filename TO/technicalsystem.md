@@ -354,6 +354,10 @@ docker run --rm --volumes-from nginx -v /bak:/bak --name backup nginx tar cvf  /
 docker run --rm --volumes-from nginx2 -v /bak:/bak --name backup nginx tar xf  /bak/data.tar -C /data/
 ```
 
+#### 3. Harbor
+
+(Harbor)[https://goharbor.io/] 是云原生基金会（CNCF）毕业项目，是构建私有仓库的首选，包含权限管理、LDAP、日志审核等
+
 #### 3. kubernetes
 
 (kubernetes)[https://iscod.github.io/#/devops/kubernetes]
