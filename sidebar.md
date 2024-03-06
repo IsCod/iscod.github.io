@@ -15,6 +15,8 @@
   * [插入排序](sort/insert.md)
   * [计数/桶排序](sort/count.md)
   * [快速排序](sort/quick.md)
+* 区块链
+  * [创世纪](blockchain/index.md)
 * 数据序列化协议
     * [JSON](data_marshal/JSON.md)
     * [Protobuf](data_marshal/protobuf.md)
