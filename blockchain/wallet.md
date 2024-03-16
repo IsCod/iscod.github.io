@@ -39,12 +39,11 @@ func NewWallet() (*Wallet, error) {
 		return nil, err
 	}
 
-	publicKey := append(privateKey.X.Bytes(), privateKey.Y.Bytes()...)
-
-	return &Wallet{
-		privateKey: privateKey,
-		publicKey:  publicKey,
-	}, nil
+    publicKey := append(privateKey.PublicKey.X.Bytes(), privateKey.PublicKey.Y.Bytes()...)
+    return &Wallet{
+      privateKey: privateKey,
+      publicKey:  publicKey,
+    }, nil
 }
 
 func (w *Wallet) GetPublicKeyHash160() []byte {
