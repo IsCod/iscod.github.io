@@ -74,21 +74,6 @@ func main() {
 }
 ```
 
-### 区块
-
-### 创世区块
-
-#### 配置选项
-
-#### 从磁盘读取
-
-### 数字签名
-
-#### 哈希
-#### 冲压
-#### 签名
-#### 寻址
-#### 验证
-
 * 参考
-    * [JSON](https://developer.bitcoin.org/reference/wallets.html?highlight=wallet)
+    * [bitcoin](https://developer.bitcoin.org/reference/wallets.html?highlight=wallet)
+    * [wallet-example](https://github.com/iscod/iscod.github.io/tree/master/example/blockchain)
