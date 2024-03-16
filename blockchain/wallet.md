@@ -1,6 +1,10 @@
-# 区块链技术
+# 钱包
 
 ### BTC钱包
+
+#### Bech32
+
+#### Base58
 
 1. 创建私钥（ecdsa椭圆算法）
 2. 创建公钥
@@ -8,7 +12,7 @@
 4. 生成 checksum, sum = sha256(sha256(version + hash160))[:4] // 两次hash256(version + hash160),取出前四个字节
 5. 生成地址：base58.Encode(version + hash160 + checksum)
 
-```golang
+```go
 package main
 
 import (
