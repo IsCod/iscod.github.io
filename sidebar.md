@@ -19,6 +19,7 @@
   * [密码学](blockchain/wallet.md)
   * [UTXO](blockchain/utxo.md)
   * [钱包](blockchain/wallet.md)
+  * [智能合约](blockchain/contract.md)
 * 数据序列化协议
     * [JSON](data_marshal/JSON.md)
     * [Protobuf](data_marshal/protobuf.md)
