@@ -8,12 +8,12 @@
 `immutable`关键词用于声明一个不可变的变量，即在合约部署后就不能再被改变的变量
 
 ```solidity
-   contract FundMe{
+contract FundMe{
    address public immutable i_owner; //声明合约所有人，immutable设置的变量在构造函数中设置值，即部署时可以设置
    constructor() {
         i_owner = msg.sender;
     }
-   }
+}
 ```
 #### `constant`
 
