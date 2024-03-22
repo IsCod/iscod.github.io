@@ -64,3 +64,8 @@ constructor
 
 > 一个合约只能有一个`receive`函数， 而`fallback`函数是可选的。两个函数都是未匹配到具体函数时才调用
 
+
+* 参考
+    * [smartcontractkit](https://github.com/smartcontractkit/full-blockchain-solidity-course-js?tab=readme-ov-file)
+    * [eth-converter](https://eth-converter.com/)
+    * [chain.link-data-feeds](https://docs.chain.link/data-feeds)

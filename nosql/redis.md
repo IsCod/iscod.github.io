@@ -643,4 +643,5 @@ redis-cli --cluster reshard 127.0.0.1:6383 # 为新节点划分slot
     * [如何发现和处理大Key、热Key](https://support.huaweicloud.com/bestpractice-dcs/dcs-bp-0220411.html)
     * [Redis集群](http://www.Redis.cn/topics/cluster-tutorial)
     * [Redis设计与实现](https://www.bookstack.cn/read/Redisbook/2d294542c86f1acf.md)
+    * [redis-locks](https://redis.io/docs/manual/patterns/distributed-locks/)
 
