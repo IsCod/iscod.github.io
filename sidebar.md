@@ -16,7 +16,7 @@
   * [计数/桶排序](sort/count.md)
   * [快速排序](sort/quick.md)
 * 区块链
-  * [密码学](blockchain/wallet.md)
+  <!-- * [密码学](blockchain/wallet.md) -->
   * [UTXO](blockchain/utxo.md)
   * [钱包](blockchain/wallet.md)
   * [智能合约](blockchain/contract.md)
