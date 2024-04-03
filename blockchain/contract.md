@@ -94,7 +94,7 @@ contract FundMe {
 }
 ```
 
-## sol
+### solidity
 
 ```sol
 // SPDX-License-Identifier: MIT
@@ -196,10 +196,6 @@ main().then(() => process.exit(0)).catch((error) => {
   process.exit(1);
 });
 ```
-
-
-
-
 
 * 参考
     * [smartcontractkit](https://github.com/smartcontractkit/full-blockchain-solidity-course-js?tab=readme-ov-file)
