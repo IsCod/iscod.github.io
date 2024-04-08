@@ -197,7 +197,41 @@ main().then(() => process.exit(0)).catch((error) => {
 });
 ```
 
+## hardhat
+
+### test
+
+
+
+### 验证合约
+
+hardhat提供了`hardhat-verify`插件可帮助您验证 Solidity 合约的源代码
+
+```shell
+npm install --save-dev @nomicfoundation/hardhat-verify
+```
+
+在hardhat.config.js添加
+
+```js
+require("@nomicfoundation/hardhat-verify"); 
+
+module.exports = {
+  networks: {
+    mainnet: { ... }
+  },
+  etherscan: {
+    // Your API key for Etherscan
+    // Obtain one at https://etherscan.io/
+    apiKey: "YOUR_ETHERSCAN_API_KEY"
+  }
+};
+```
+
+一个验证的合约: [simpleStorage](https://sepolia.etherscan.io/address/0xC93783D56A7c1b59764b52823Aa5bCE0d46f235F)
+
 * 参考
+    * [hardhat](https://hardhat.org)
     * [smartcontractkit](https://github.com/smartcontractkit/full-blockchain-solidity-course-js?tab=readme-ov-file)
     * [eth-converter](https://eth-converter.com/)
     * [chain.link-data-feeds](https://docs.chain.link/data-feeds)
