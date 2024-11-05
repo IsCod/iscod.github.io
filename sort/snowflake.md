@@ -107,6 +107,7 @@ func (s *snowflake) NextId() (ID, error) {
 ```
 
 * 参考
+    * [雪花算法，UUID, 自增ID 比较](https://iscod.github.io/#/TO/id)
     * [twitter-snowflake](https://github.com/twitter-archive/snowflake)
     * [Meituan-Leaf](https://github.com/Meituan-Dianping/Leaf)
     * [bwmarrin-snowflake](https://github.com/bwmarrin/snowflake)

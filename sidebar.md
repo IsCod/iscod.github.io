@@ -59,6 +59,7 @@
   * [ShardingSphere](sql/shardingsphere.md)
   * [MyCat](sql/mycat.md)
 * 杂项
+  * [雪花算法，UUID, 自增ID 比较](TO/id.md)
   * [分布式](TO/distributed.md)
   * [EFK日志](TO/efk.md)
   * [AJAX](TO/AJAX.md)
